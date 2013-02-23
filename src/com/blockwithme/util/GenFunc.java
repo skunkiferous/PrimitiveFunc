@@ -26,12 +26,42 @@ import java.io.IOException;
 /**
  * <code>GenFunc</code> generates the source-code of the functions.
  *
+ * Usage: GenFunc OutputDirectory LicenseFile PackageName ClassNamePrefix MethodName Throws MinimumNumberOfArgs MaximumNumberOfArgs
+ *
+ * OutputDirectory is the directory where the source files are generated. For example, C:\temp\funcs
+ * LicenseFile is the path to the license file, to use as header. Can be "" or simply empty. For example, APACHE_LICENSE_HEADER.txt.
+ * PackageName is the name of the package in which the interfaces are created, for example "com,test".
+ * ClassNamePrefix the interface name prefix, for example "Func"
+ * MethodName is the method name, for example "apply" or "call".
+ * Throws can contain the optional name of a thrown "Throwable". Leave blank for no "throws". Example: java.io.IOException
+ * MinimumNumberOfArgs is the minimum number of parameters the functions will have, for example 0.
+ * MaximumNumberOfArgs is the maximum number of parameters the functions will have, for example 3.
+ *
+ * Hint: It supports up to 5 as the maximum number of parameters,
+ * but that would be near 1 million interfaces; not recommended ... ;)
  *
  * @author monster
  *
  */
 public class GenFunc {
 
+	/** Usage */
+	private static final String USAGE =
+		"Usage:\n" +
+		"    GenFunc OutputDirectory LicenseFile PackageName ClassNamePrefix MethodName Throws MinimumNumberOfArgs MaximumNumberOfArgs\n"+
+		"\n"+
+		"OutputDirectory is the directory where the source files are generated. For example, 'C:\temp\funcs'\n"+
+		"LicenseFile is the path to the license file, to use as header. Can be '' or simply empty. For example, 'APACHE_LICENSE_HEADER.txt'.\n"+
+		"PackageName is the name of the package in which the interfaces are created, for example 'com,test'.\n"+
+		"ClassNamePrefix the interface name prefix, for example 'Func'\n"+
+		"MethodName is the method name, for example 'apply' or 'call'.\n"+
+		"Throws can contain the optional name of a thrown 'Throwable'. Leave blank for no 'throws'. Example: 'java.io.IOException'\n"+
+		"MinimumNumberOfArgs is the minimum number of parameters the functions will have, for example 0.\n"+
+		"MaximumNumberOfArgs is the maximum number of parameters the functions will have, for example 3.\n"+
+		"\n"+
+		"Hint: It supports up to 5 as the maximum number of parameters,\n"+
+		"      but that would be near 1 million interfaces; not recommended ... ;)\n"
+	;
 	/** Format for interface name generation. */
 	private static final String[] INTERFACE_NAME_FORMAT = {
 		"%1$s0%2$s",
@@ -80,6 +110,7 @@ public class GenFunc {
 			final String packageName,
 			final String classNamePrefix,
 			final String methodName,
+			final String throwsStr,
 			final String minimumNumberOfArgs,
 			final String maximumNumberOfArgs) {
 		if (outputrDirectory == null) {
@@ -137,7 +168,11 @@ public class GenFunc {
 				throw new IllegalStateException("License File cannot be read: "+licenseFile, e);
 			}
 		}
-		generate(dir, fileHeader, packageName, classNamePrefix, methodName, min, max);
+		String throwsStr2 = "";
+		if ((throwsStr != null) && !throwsStr.isEmpty()) {
+			throwsStr2 = " throws "+throwsStr;
+		}
+		generate(dir, fileHeader, packageName, classNamePrefix, methodName, throwsStr2, min, max);
 	}
 
 	/** Generates the functions. */
@@ -146,6 +181,7 @@ public class GenFunc {
 			final String packageName,
 			final String classNamePrefix,
 			final String methodName,
+			final String throwsStr,
 			final int minimumNumberOfArgs,
 			final int maximumNumberOfArgs) {
 		if (outputrDirectory == null) {
@@ -245,7 +281,7 @@ public class GenFunc {
 		}
 
 		doGenerate(outputrDirectory, (fileHeader == null) ? "" : fileHeader,
-				packageName, classNamePrefix, methodName, minimumNumberOfArgs, maximumNumberOfArgs);
+				packageName, classNamePrefix, methodName, throwsStr, minimumNumberOfArgs, maximumNumberOfArgs);
 	}
 
 	/** Generates the functions. */
@@ -254,6 +290,7 @@ public class GenFunc {
 			final String packageName,
 			final String classNamePrefix,
 			final String methodName,
+			final String throwsStr,
 			final int minimumNumberOfArgs,
 			final int maximumNumberOfArgs) {
 		System.out.println("Generating fucntions:");
@@ -261,6 +298,7 @@ public class GenFunc {
 		System.out.println("    Package:                      "+packageName);
 		System.out.println("    Class Name Prefix:            "+classNamePrefix);
 		System.out.println("    Method Name:                  "+methodName);
+		System.out.println("    Throws:                       "+throwsStr);
 		System.out.println("    Minimum Number Of Parameters: "+minimumNumberOfArgs);
 		System.out.println("    Maximum Number Of Parameters: "+maximumNumberOfArgs);
 		String content = fileHeader;
@@ -269,7 +307,7 @@ public class GenFunc {
 		content += " * Generated automatically by "+GENERATOR+"\n */\n";
 		content += "public interface %1$s {\n";
 		content += "    /** Function <code>"+methodName+"</code> */\n";
-		content += "    %2$s "+methodName+"(%3$s);\n";
+		content += "    %2$s "+methodName+"(%3$s)"+throwsStr+";\n";
 		content += "}\n";
 		int total = 0;
 		for (int p = minimumNumberOfArgs; p <= maximumNumberOfArgs; p++) {
@@ -469,18 +507,19 @@ public class GenFunc {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		if (args.length != 7) {
-			System.out.println("Usage: GenFunc <OutputDirectory> <LicenseFile> <PackageName> <ClassNamePrefix> <MethodName> <MinimumNumberOfArgs> <MaximumNumberOfArgs>");
+		if (args.length != 8) {
+			System.out.println(USAGE);
 		} else {
 			final String outputrDirectory = args[0].trim();
 			final String licenseFile = args[1].trim();
 			final String packageName = args[2].trim();
 			final String classNamePrefix = args[3].trim();
 			final String methodName = args[4].trim();
-			final String minimumNumberOfArgs = args[5].trim();
-			final String maximumNumberOfArgs = args[6].trim();
+			final String throwsStr = args[5].trim();
+			final String minimumNumberOfArgs = args[6].trim();
+			final String maximumNumberOfArgs = args[7].trim();
 			generate(outputrDirectory, licenseFile, packageName, classNamePrefix,
-					methodName, minimumNumberOfArgs, maximumNumberOfArgs);
+					methodName, throwsStr, minimumNumberOfArgs, maximumNumberOfArgs);
 		}
 	}
 }
