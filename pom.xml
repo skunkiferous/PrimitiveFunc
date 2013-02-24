@@ -1,18 +1,11 @@
-<!--
- * Copyright (C) 2013 Sebastien Diot.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
--->
+<!-- * Copyright (C) 2013 Sebastien Diot. * * Licensed under the Apache License,
+	Version 2.0 (the "License"); * you may not use this file except in compliance
+	with the License. * You may obtain a copy of the License at * * http://www.apache.org/licenses/LICENSE-2.0
+	* * Unless required by applicable law or agreed to in writing, software *
+	distributed under the License is distributed on an "AS IS" BASIS, * WITHOUT
+	WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. * See the
+	License for the specific language governing permissions and * limitations
+	under the License. -->
 
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
@@ -22,12 +15,26 @@
 	<version>0.0.2-SNAPSHOT</version>
 
 	<properties>
-	    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
 
 	<build>
-		<sourceDirectory>src</sourceDirectory>
+		<sourceDirectory>sources</sourceDirectory>
 		<plugins>
+			<plugin>
+				<artifactId>maven-clean-plugin</artifactId>
+				<version>2.5</version>
+				<configuration>
+					<filesets>
+						<fileset>
+							<directory>${project.basedir}/sources</directory>
+						</fileset>
+						<fileset>
+							<directory>${project.basedir}/target</directory>
+						</fileset>
+					</filesets>
+				</configuration>
+			</plugin>
 			<plugin>
 				<artifactId>maven-compiler-plugin</artifactId>
 				<version>2.3.2</version>
@@ -36,31 +43,47 @@
 					<target>1.7</target>
 				</configuration>
 			</plugin>
-
+			<plugin>
+				<artifactId>maven-resources-plugin</artifactId>
+				<version>2.6</version>
+				<executions>
+					<execution>
+						<id>copy-files</id>
+						<phase>generate-sources</phase>
+						<goals>
+							<goal>copy-resources</goal>
+						</goals>
+						<configuration>
+							<outputDirectory>${project.basedir}/sources</outputDirectory>
+							<resources>
+								<resource>
+									<directory>${project.basedir}/src</directory>
+								</resource>
+							</resources>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-jar-plugin</artifactId>
 				<version>2.4</version>
 				<configuration>
-					<archive>
-						<manifest>
-							<addClasspath>true</addClasspath>
-							<classpathPrefix>lib/</classpathPrefix>
-							<mainClass>com.blockwithme.func.GenFunc</mainClass>
-						</manifest>
-					</archive>
+					<excludes>
+						<exclude>**/util/GenFunc.class</exclude>
+					</excludes>
 				</configuration>
 			</plugin>
 		</plugins>
 		<resources>
-		  <resource>
-		    <directory>${basedir}</directory>
-		    <filtering>false</filtering>
-		    <includes>
-		      <include>LICENSE</include>
-		      <include>README.md</include>
-		    </includes>
-		  </resource>
+			<resource>
+				<directory>${basedir}</directory>
+				<filtering>false</filtering>
+				<includes>
+					<include>LICENSE</include>
+					<include>README.md</include>
+				</includes>
+			</resource>
 		</resources>
 	</build>
 	<name>PrimitiveFunc</name>
@@ -72,4 +95,48 @@
 		<url>https://github.com/skunkiferous/PrimitiveFunc</url>
 	</scm>
 	<url>https://github.com/skunkiferous/PrimitiveFunc</url>
+	<profiles>
+		<profile>
+			<id>code-generator</id>
+			<build>
+				<finalName>${project.artifactId}-Generated-${project.version}</finalName>
+				<plugins>
+					<plugin>
+						<artifactId>maven-compiler-plugin</artifactId>
+						<version>2.3.2</version>
+						<configuration>
+							<source>1.7</source>
+							<target>1.7</target>
+						</configuration>
+					</plugin>
+					<plugin>
+						<groupId>org.codehaus.mojo</groupId>
+						<artifactId>exec-maven-plugin</artifactId>
+						<version>1.1.1</version>
+						<executions>
+							<execution>
+								<phase>generate-sources</phase>
+								<goals>
+									<goal>java</goal>
+								</goals>
+								<configuration>
+									<mainClass>com.blockwithme.util.GenFunc</mainClass>
+									<arguments>
+										<argument>${project.basedir}/sources/com/blockwithme/func</argument>
+										<argument>${project.basedir}/APACHE_LICENSE_HEADER.txt</argument>
+										<argument>com.blockwithme.func</argument>
+										<argument>${interfaceName}</argument>
+										<argument>${function}</argument>
+										<argument>${exceptions}</argument>
+										<argument>${minParam}</argument>
+										<argument>${maxParam}</argument>
+									</arguments>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
 </project>
