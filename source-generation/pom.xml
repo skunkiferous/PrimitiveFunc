@@ -16,6 +16,8 @@
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<packageName>com.blockwithme.func</packageName>
+		<licenseFile>${project.basedir}/../APACHE_LICENSE_HEADER.txt</licenseFile>
 	</properties>
 	<build>
 		<sourceDirectory>src</sourceDirectory>
@@ -28,6 +30,22 @@
 					<target>1.7</target>
 				</configuration>
 			</plugin>
+			<!-- To clean the generated sources. -->
+			<plugin>
+				<artifactId>maven-clean-plugin</artifactId>
+				<version>2.5</version>
+				<configuration>
+					<filesets>
+						<fileset>
+							<directory>${project.basedir}/src</directory>
+						</fileset>
+						<fileset>
+							<directory>${project.basedir}/target</directory>
+						</fileset>
+					</filesets>
+				</configuration>
+			</plugin>
+			<!-- To generate sources -->
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>exec-maven-plugin</artifactId>
@@ -41,12 +59,13 @@
 						<configuration>
 							<properties>
 								<packageName>com.blockwithme.func</packageName>
+								<licenseFile>${project.basedir}/../APACHE_LICENSE_HEADER.txt</licenseFile>
 							</properties>
 							<mainClass>com.blockwithme.util.GenFunc</mainClass>
 							<arguments>
 								<argument>${project.basedir}/src</argument>
-								<argument>${project.basedir}/../APACHE_LICENSE_HEADER.txt</argument>
-								<argument>com.blockwithme.func</argument>
+								<argument>${licenseFile}</argument>
+								<argument>${packageName}</argument>
 								<argument>${interfaceName}</argument>
 								<argument>${function}</argument>
 								<argument>${minParam}</argument>
