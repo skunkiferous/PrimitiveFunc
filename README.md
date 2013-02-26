@@ -7,18 +7,21 @@ The class com.blockwithme.util.GenFunc can be used to generate your customized f
 
 Maven build instructions :
 
-* To compile and build the main bundle, run 'mvn install' this step generates PrimitiveFunc-x.y.z-SNAPSHOT.jar in your maven repo.
-* To generate sources and packaging them as jar run the following maven command :
+* To compile and build the main bundle, run 'mvn install' this step generates PrimitiveFunc-x.y.z.jar in your maven repo.
+* To generate sources and packaging them as jar go to source-generation and run the following maven command :
 
-  mvn -DinterfaceName=Func -Dfunction=func -Dexceptions=java.lang.Exception -DminParam=0 -DmaxParam=1 install -Pcode-generator
-  
-  Usage :
+```
+  mvn -DpackageName=[PACKAGE_NAME] -DlicenseFile=[FULL_PATH_TO_THE_LICENSE_FILE] -DinterfaceName=[INTERFACE_NAME] -Dfunction=[FUNCTION_PREFIX] -Dexceptions=[EXCEPTION_NAME] -DminParam=[MIN_PARAM] -DmaxParam=[MAX_PARAM] install
+```  
+
+Usage :
+  * packageName the java package name where sources will be generated. This is an Optional parameter and defaults to 'com.blockwithme.func'.
+  * licenseFile the full path to the license file, this is an Optional parameter and defaults to the APACHE_LICENSE_HEADER.txt packaged with this project.
   * interfaceName the interface name prefix, for example 'Func'
-	* function is the method name, for example 'apply' or 'call'.
-	* exceptions can contain the optional name of a thrown 'Throwable'. Leave blank for no 'throws'. Example: 'java.io.IOException'.
-	* minParam is the minimum number of parameters the functions will have, for example 0.
-	* maxParam is the maximum number of parameters the functions will have, for example 3.
-	* Hint: It supports up to 5 as the maximum number of parameters, but that would be near 1 million interfaces; not recommended.
-	* Generated Package name can also be modified by editing pom.xml.
-
-  (Note: this step generates PrimitiveFunc-Generated-x.y.z-SNAPSHOT.jar)
+  * function is the method name, for example 'apply' or 'call'.
+  * exceptions can contain the optional name of a thrown 'Throwable'. Leave blank for no 'throws'. Example: 'java.io.IOException'.
+  * minParam is the minimum number of parameters the functions will have, for example 0.
+  * maxParam is the maximum number of parameters the functions will have, for example 3.
+  
+  Hint: It supports up to 5 as the maximum number of parameters, but that would be near 1 million interfaces; not recommended.
+  (Note: this step generates PrimitiveFunc-Generated-x.y.z.jar, modify the 'source-generation/pom.xml' appropriately if the artifact-ids need any modifications.)
