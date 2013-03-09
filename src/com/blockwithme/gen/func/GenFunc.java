@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.blockwithme.util;
+package com.blockwithme.gen.func;
 
 import java.io.BufferedReader;
 import java.io.File;

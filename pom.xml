@@ -12,7 +12,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.blockwithme</groupId>
 	<artifactId>PrimitiveFunc</artifactId>
-	<version>0.0.2</version>
+	<version>0.0.3</version>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -47,7 +47,7 @@
 					<manifestLocation>${project.basedir}/META-INF</manifestLocation>
 					<instructions>
 						<Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
-						<Export-Package>com.blockwithme.util</Export-Package>
+						<Export-Package>com.blockwithme.gen.func</Export-Package>
 					</instructions>
 				</configuration>
 			</plugin>
