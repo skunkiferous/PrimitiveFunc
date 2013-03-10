@@ -61,7 +61,7 @@
 								<packageName>com.blockwithme.func</packageName>
 								<licenseFile>${project.basedir}/../APACHE_LICENSE_HEADER.txt</licenseFile>
 							</properties>
-							<mainClass>com.blockwithme.util.GenFunc</mainClass>
+							<mainClass>com.blockwithme.gen.func.GenFunc</mainClass>
 							<arguments>
 								<argument>${project.basedir}/src</argument>
 								<argument>${licenseFile}</argument>
@@ -109,7 +109,7 @@
 		<dependency>
 			<groupId>com.blockwithme</groupId>
 			<artifactId>PrimitiveFunc</artifactId>
-			<version>0.0.2</version>
+			<version>0.0.3</version>
 			<scope>provided</scope>
 		</dependency>
 	</dependencies>
