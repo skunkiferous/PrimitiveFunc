@@ -11,3 +11,4 @@ target
 bin
 conf
 sources
+/nbproject/private/
