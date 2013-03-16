@@ -12,13 +12,42 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.blockwithme</groupId>
 	<artifactId>PrimitiveFunc-Generated</artifactId>
-	<version>0.0.2</version>
+	<version>0.0.3</version>
+
+	<name>PrimitiveFunc-Generated</name>
+	<description>Sub project of PrimitiveFunc - actually generates 'Function' interface based on user inputs.</description>
+	<organization>
+		<name>Sebastien Diot</name>
+	</organization>
+	<url>https://github.com/skunkiferous/PrimitiveFunc</url>
+
+    	<scm>
+        	<connection>scm:git:git@github.com:skunkiferous/PrimitiveFunc.git</connection>
+        	<developerConnection>scm:git:git@github.com:skunkiferous/PrimitiveFunc.git</developerConnection>
+        	<url>git@github.com:skunkiferous/PrimitiveFunc.git</url>
+    	</scm>
+
+    	<developers>
+        	<developer>
+            		<id>skunkiferous</id>
+            		<name>Sebastien Diot</name>
+            		<email>s.diot@eurodata.de</email>
+        	</developer>
+    	</developers>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
 		<packageName>com.blockwithme.func</packageName>
 		<licenseFile>${project.basedir}/../APACHE_LICENSE_HEADER.txt</licenseFile>
+		<interfaceName>Func</interfaceName>
+		<function>apply</function>
+		<minParam>0</minParam>
+		<maxParam>4</maxParam>
+		<filter>com.blockwithme.gen.func.OPlus4</filter>
+		<exceptions></exceptions>
 	</properties>
+
 	<build>
 		<sourceDirectory>src</sourceDirectory>
 		<plugins>
@@ -28,6 +57,7 @@
 				<configuration>
 					<source>1.7</source>
 					<target>1.7</target>
+					<compilerArgument>-g:none</compilerArgument>
 				</configuration>
 			</plugin>
 			<!-- To clean the generated sources. -->
@@ -70,6 +100,7 @@
 								<argument>${function}</argument>
 								<argument>${minParam}</argument>
 								<argument>${maxParam}</argument>
+								<argument>${filter}</argument>
 								<argument>${exceptions}</argument>
 							</arguments>
 						</configuration>
@@ -79,24 +110,45 @@
 					<dependency>
 						<groupId>com.blockwithme</groupId>
 						<artifactId>PrimitiveFunc</artifactId>
-						<version>0.0.2</version>
+						<version>0.0.4</version>
 					</dependency>
 				</dependencies>
 			</plugin>
 			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
+				<groupId>org.apache.felix</groupId>
+				<artifactId>maven-bundle-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>bundle-manifest</id>
+						<phase>process-classes</phase>
+						<goals>
+							<goal>manifest</goal>
+						</goals>
+					</execution>
+				</executions>
+				<version>2.3.7</version>
+				<extensions>true</extensions>
+				<configuration>
+					<manifestLocation>${project.basedir}/META-INF</manifestLocation>
+					<instructions>
+						<Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
+						<Export-Package>com.blockwithme.gen.func</Export-Package>
+					</instructions>
+				</configuration>
+			</plugin>
+			<plugin>
 				<artifactId>maven-jar-plugin</artifactId>
 				<version>2.4</version>
 				<configuration>
-					<excludes>
-						<exclude>**/util/GenFunc.class</exclude>
-					</excludes>
+					<archive>
+						<manifestFile>${project.basedir}/META-INF/MANIFEST.MF</manifestFile>
+					</archive>
 				</configuration>
 			</plugin>
 		</plugins>
 		<resources>
 			<resource>
-				<directory>${basedir}</directory>
+				<directory>${basedir}/..</directory>
 				<filtering>false</filtering>
 				<includes>
 					<include>LICENSE</include>
@@ -105,22 +157,13 @@
 			</resource>
 		</resources>
 	</build>
+
 	<dependencies>
 		<dependency>
 			<groupId>com.blockwithme</groupId>
 			<artifactId>PrimitiveFunc</artifactId>
-			<version>0.0.3</version>
+			<version>0.0.4</version>
 			<scope>provided</scope>
 		</dependency>
 	</dependencies>
-
-	<name>PrimitiveFunc-Generated</name>
-	<description> Sub project of PrimitiveFunc - actually generates 'Function' interface based on user inputs.  </description>
-	<organization>
-		<name>Sebastien Diot</name>
-	</organization>
-	<scm>
-		<url>https://github.com/skunkiferous/PrimitiveFunc</url>
-	</scm>
-	<url>https://github.com/skunkiferous/PrimitiveFunc</url>
 </project>

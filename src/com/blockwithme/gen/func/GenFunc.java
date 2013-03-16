@@ -22,10 +22,12 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 
+import com.blockwithme.gen.func.FuncFilter.ParamType;
+
 /**
  * <code>GenFunc</code> generates the source-code of the functions.
  *
- * Usage: GenFunc OutputDirectory LicenseFile PackageName ClassNamePrefix MethodName Throws MinimumNumberOfArgs MaximumNumberOfArgs
+ * Usage: GenFunc OutputDirectory LicenseFile PackageName ClassNamePrefix MethodName Throws MinimumNumberOfArgs MaximumNumberOfArgs Filter
  *
  * OutputDirectory is the directory where the source files are generated. For example, C:\temp\funcs
  * LicenseFile is the path to the license file, to use as header. Can be "" or simply empty. For example, APACHE_LICENSE_HEADER.txt.
@@ -35,6 +37,7 @@ import java.io.IOException;
  * Throws can contain the optional name of a thrown "Throwable". Leave blank for no "throws". Example: java.io.IOException
  * MinimumNumberOfArgs is the minimum number of parameters the functions will have, for example 0.
  * MaximumNumberOfArgs is the maximum number of parameters the functions will have, for example 3.
+ * Filter is the name of a class that implements com.blockwithme.gen.func.FuncFilter (optional).
  *
  * Hint: It supports up to 5 as the maximum number of parameters,
  * but that would be near 1 million interfaces; not recommended ... ;)
@@ -46,7 +49,7 @@ public class GenFunc {
 
     /** Usage */
     private static final String USAGE = "Usage:\n"
-            + "    GenFunc OutputDirectory LicenseFile PackageName ClassNamePrefix MethodName Throws MinimumNumberOfArgs MaximumNumberOfArgs\n"
+            + "    GenFunc OutputDirectory LicenseFile PackageName ClassNamePrefix MethodName Throws MinimumNumberOfArgs MaximumNumberOfArgs Filter\n"
             + "\n"
             + "OutputDirectory is the directory where the source files are generated. For example, 'C:\temp\funcs'\n"
             + "LicenseFile is the path to the license file, to use as header. Can be '' or simply empty. For example, 'APACHE_LICENSE_HEADER.txt'.\n"
@@ -55,6 +58,7 @@ public class GenFunc {
             + "MethodName is the method name, for example 'apply' or 'call'.\n"
             + "MinimumNumberOfArgs is the minimum number of parameters the functions will have, for example 0.\n"
             + "MaximumNumberOfArgs is the maximum number of parameters the functions will have, for example 3.\n"
+            + "Filter is the name of a class that implements com.blockwithme.gen.func.FuncFilter (optional).\n"
             + "Throws can contain the optional name of a thrown 'Throwable'. Leave blank for no 'throws'. Example: 'java.io.IOException'\n"
             + "\n"
             + "Hint: It supports up to 5 as the maximum number of parameters,\n"
@@ -68,6 +72,14 @@ public class GenFunc {
     /** The possible parameter types, except Object. */
     private static final String[] PARAM_TYPES = { "boolean", "byte", "char",
             "short", "int", "long", "float", "double" };
+
+    /** The possible parameter types, as enum for faster filtering. */
+    private static final FuncFilter.ParamType[] PARAM_TYPES3 = {
+            FuncFilter.ParamType.Boolean, FuncFilter.ParamType.Byte,
+            FuncFilter.ParamType.Char, FuncFilter.ParamType.Short,
+            FuncFilter.ParamType.Int, FuncFilter.ParamType.Long,
+            FuncFilter.ParamType.Float, FuncFilter.ParamType.Double,
+            FuncFilter.ParamType.Object };
 
     /** ID of parameter of type object. */
     private static final int OBJECT_PARAM = PARAM_TYPES.length;
@@ -102,21 +114,27 @@ public class GenFunc {
      */
     private static int doGenerate(final File outputrDirectory,
             final String classNamePrefix, final String format,
-            final int numberOfArgs) {
+            final int numberOfArgs, final FuncFilter filter) {
         int result = 0;
         for (int r = 0; r <= OBJECT_RETURN; r++) {
             final String returnType = RETURN_TYPES[r];
+            final ParamType returnType2 = (r == 0) ? ParamType.Void
+                    : PARAM_TYPES3[r - 1];
             final int[] params = new int[numberOfArgs];
             int current = 0;
             boolean again = true;
             while (again) {
-                final String name = genName2(classNamePrefix, r, params);
-                final String genParams = genGenericsParams(r, params);
-                final String paramList = genParameterList(params);
-                final String content = String.format(format, name + genParams,
-                        returnType, paramList);
-                final File file = new File(outputrDirectory, name + ".java");
-                outputInterface(file, content);
+                if ((filter == null)
+                        || filter
+                                .accept(genParameterList2(params), returnType2)) {
+                    final String name = genName2(classNamePrefix, r, params);
+                    final String genParams = genGenericsParams(r, params);
+                    final String paramList = genParameterList(params);
+                    final String content = String.format(format, name
+                            + genParams, returnType, paramList);
+                    final File file = new File(outputrDirectory, name + ".java");
+                    outputInterface(file, content);
+                }
                 result++;
                 if (result % 250 == 0) {
                     System.out.print(".");
@@ -148,7 +166,7 @@ public class GenFunc {
             final String fileHeader, final String packageName,
             final String classNamePrefix, final String methodName,
             final String throwsStr, final int minimumNumberOfArgs,
-            final int maximumNumberOfArgs) {
+            final int maximumNumberOfArgs, final FuncFilter filter) {
         System.out.println("Generating fucntions:");
         System.out.println("    Header:                       "
                 + (fileHeader.isEmpty() ? "No" : "Yes"));
@@ -161,6 +179,7 @@ public class GenFunc {
                 + minimumNumberOfArgs);
         System.out.println("    Maximum Number Of Parameters: "
                 + maximumNumberOfArgs);
+        System.out.println("    Function filter:              " + filter);
         String content = fileHeader;
         content += "\npackage " + packageName + ";\n\n";
         content += "/**\n * Primitive Function Interface <ode>%1$s</code>.\n";
@@ -174,7 +193,7 @@ public class GenFunc {
             System.out.print("Generation functions with " + p
                     + " parameters ...");
             final int count = doGenerate(outputrDirectory, classNamePrefix,
-                    content, p);
+                    content, p, filter);
             System.out.println(" " + count + " functions generated.");
             total += count;
         }
@@ -309,6 +328,15 @@ public class GenFunc {
         return result;
     }
 
+    /** Generate the parameter list for the filter. */
+    private static ParamType[] genParameterList2(final int[] params) {
+        final FuncFilter.ParamType[] result = new FuncFilter.ParamType[params.length];
+        for (int i = 0; i < params.length; i++) {
+            result[i] = PARAM_TYPES3[params[i]];
+        }
+        return result;
+    }
+
     /** Outputs the generated interface. */
     private static void outputInterface(final File file, final String content) {
         try (FileWriter fw = new FileWriter(file);) {
@@ -323,7 +351,7 @@ public class GenFunc {
             final String fileHeader, final String packageName,
             final String classNamePrefix, final String methodName,
             final String throwsStr, final int minimumNumberOfArgs,
-            final int maximumNumberOfArgs) {
+            final int maximumNumberOfArgs, final String filterType) {
         if (outputrDirectory == null) {
             throw new IllegalArgumentException("outputrDirectory is null");
         }
@@ -438,9 +466,19 @@ public class GenFunc {
                     + maximumNumberOfArgs + ")");
         }
 
+        FuncFilter filter = null;
+        if ((filterType != null) && !filterType.isEmpty()) {
+            try {
+                filter = (FuncFilter) Class.forName(filterType).newInstance();
+            } catch (InstantiationException | IllegalAccessException
+                    | ClassNotFoundException e) {
+                throw new IllegalArgumentException("bad filter type ("
+                        + filterType + ")", e);
+            }
+        }
         doGenerate(outputrDirectory, (fileHeader == null) ? "" : fileHeader,
                 packageName, classNamePrefix, methodName, throwsStr,
-                minimumNumberOfArgs, maximumNumberOfArgs);
+                minimumNumberOfArgs, maximumNumberOfArgs, filter);
     }
 
     /** Generates the functions. */
@@ -448,7 +486,7 @@ public class GenFunc {
             final String licenseFile, final String packageName,
             final String classNamePrefix, final String methodName,
             final String throwsStr, final String minimumNumberOfArgs,
-            final String maximumNumberOfArgs) {
+            final String maximumNumberOfArgs, final String filterType) {
         if (outputrDirectory == null) {
             throw new IllegalArgumentException("outputrDirectory is null");
         }
@@ -490,7 +528,7 @@ public class GenFunc {
 
         String fileHeader = "";
         if ((licenseFile != null) && !licenseFile.isEmpty()) {
-            final File lic = new File(licenseFile);
+            final File lic = new File(licenseFile).getAbsoluteFile();
             if (!lic.exists()) {
                 throw new IllegalArgumentException(
                         "License File does not exist: " + licenseFile);
@@ -514,14 +552,14 @@ public class GenFunc {
             throwsStr2 = " throws " + throwsStr;
         }
         generate(dir, fileHeader, packageName, classNamePrefix, methodName,
-                throwsStr2, min, max);
+                throwsStr2, min, max, filterType);
     }
 
     /**
      * @param args
      */
     public static void main(final String[] args) {
-        if (args.length < 7 || args.length > 8) {
+        if (args.length < 7 || args.length > 9) {
             System.out.println(USAGE);
         } else {
 
@@ -532,10 +570,15 @@ public class GenFunc {
             final String methodName = args[4].trim();
             final String minimumNumberOfArgs = args[5].trim();
             final String maximumNumberOfArgs = args[6].trim();
-            final String throwsStr = args[7] == null ? "" : args[7].trim();
+            final String filterType = (args.length == 7) ? null : args[7]
+                    .trim();
+            String throwsStr = (args.length < 9) ? "" : args[8];
+            if (throwsStr == null) {
+                throwsStr = "";
+            }
             generate(outputrDirectory, licenseFile, packageName,
                     classNamePrefix, methodName, throwsStr,
-                    minimumNumberOfArgs, maximumNumberOfArgs);
+                    minimumNumberOfArgs, maximumNumberOfArgs, filterType);
         }
     }
 }

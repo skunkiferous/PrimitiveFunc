@@ -12,7 +12,29 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.blockwithme</groupId>
 	<artifactId>PrimitiveFunc</artifactId>
-	<version>0.0.3</version>
+	<version>0.0.4</version>
+
+	<name>PrimitiveFunc</name>
+	<description>Finally fills the gap of using generic "Function" interfaces in Java, that do NOT require you to turn your input or output of primitive type into primitive wrappers, therefore pointlessly creating garbage.</description>
+	<organization>
+		<name>Sebastien Diot</name>
+	</organization>
+
+	<url>https://github.com/skunkiferous/PrimitiveFunc</url>
+
+    	<scm>
+        	<connection>scm:git:git@github.com:skunkiferous/PrimitiveFunc.git</connection>
+        	<developerConnection>scm:git:git@github.com:skunkiferous/PrimitiveFunc.git</developerConnection>
+        	<url>git@github.com:skunkiferous/PrimitiveFunc.git</url>
+    	</scm>
+
+    	<developers>
+        	<developer>
+            		<id>skunkiferous</id>
+            		<name>Sebastien Diot</name>
+            		<email>s.diot@eurodata.de</email>
+        	</developer>
+    	</developers>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -72,14 +94,4 @@
 			</resource>
 		</resources>
 	</build>
-	<name>PrimitiveFunc</name>
-	<description>Finally fills the gap of using generic "Function" interfaces in Java, that do NOT require you to turn your input or output of primitive type into primitive wrappers, therefore pointlessly creating garbage.</description>
-	<organization>
-		<name>Sebastien Diot</name>
-	</organization>
-	<scm>
-		<url>https://github.com/skunkiferous/PrimitiveFunc</url>
-	</scm>
-	<url>https://github.com/skunkiferous/PrimitiveFunc</url>
-
 </project>
