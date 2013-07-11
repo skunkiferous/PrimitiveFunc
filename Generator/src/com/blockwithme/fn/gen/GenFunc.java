@@ -85,6 +85,23 @@ public class GenFunc {
     private static final String[] RETURN_TYPES2 = { "P", "Z", "B", "C", "S",
             "I", "L", "F", "D", "O" };
 
+    /** Format for interface name generation. */
+    private static final String[] SIGN_FORMAT = { "{%1$s};", "{%1$s, %2$s};",
+            "{%1$s, %2$s, %3$s};", "{%1$s, %2$s, %3$s, %4$s};",
+            "{%1$s, %2$s, %3$s, %4$s, %5$s};",
+            "{%1$s, %2$s, %3$s, %4$s, %5$s, %6$s};", };
+
+    /** The possible parameter types as a class */
+    private static final String[] SIGN_PARAM_TYPES = { "Boolean.TYPE",
+            "Byte.TYPE", "Character.TYPE", "Short.TYPE", "Integer.TYPE",
+            "Long.TYPE", "Float.TYPE", "Double.TYPE", "Object.class" };
+
+    /** The possible return types as a class */
+    private static final String[] SIGN_RETURN_TYPES = { "Void.TYPE",
+            "Boolean.TYPE", "Byte.TYPE", "Character.TYPE", "Short.TYPE",
+            "Integer.TYPE", "Long.TYPE", "Float.TYPE", "Double.TYPE",
+            "Object.class" };
+
     /** Usage */
     private static final String USAGE = "Usage:\n"
             + "    GenFunc OutputDirectory LicenseFile PackageName ClassNamePrefix MethodName Throws MinimumNumberOfArgs MaximumNumberOfArgs Filter\n"
@@ -130,11 +147,14 @@ public class GenFunc {
                 if (filter == null
                         || filter
                                 .accept(genParameterList2(params), returnType2)) {
-                    final String name = genName2(classNamePrefix, r, params);
+                    final String[] generatedStrings = genName2(classNamePrefix,
+                            r, params);
+                    final String name = generatedStrings[0];
+                    final String signature = generatedStrings[1];
                     final String genParams = genGenericsParams(r, params);
                     final String paramList = genParameterList(params);
                     final String content = String.format(format, name
-                            + genParams, returnType, paramList);
+                            + genParams, signature, returnType, paramList);
                     final File file = new File(outputrDirectory, name + ".java");
                     outputInterface(file, content);
                 }
@@ -190,8 +210,11 @@ public class GenFunc {
         content += " * Generated automatically by " + GENERATOR + "\n */\n";
         content += "public interface %1$s extends "
                 + FUNCTOR_INTERFACE.getSimpleName() + " {\n";
+        content += "    /** SIGNATURE constant */\n";
+        content += "    %2$s" + "\n";
+        content += "    \n";
         content += "    /** Function <code>" + methodName + "</code> */\n";
-        content += "    %2$s " + methodName + "(%3$s)" + throwsStr + ";\n";
+        content += "    %3$s " + methodName + "(%4$s)" + throwsStr + ";\n";
         content += "}\n";
         int total = 0;
         for (int p = minimumNumberOfArgs; p <= maximumNumberOfArgs; p++) {
@@ -282,36 +305,46 @@ public class GenFunc {
     }
 
     /** Generated the generic parameters for the interface definition. */
-    private static String genName2(final String classNamePrefix,
+    private static String[] genName2(final String classNamePrefix,
             final int returnType, final int... params) {
         final String name;
         final int count = params.length;
+        String signatureString = "Class<?>[] SIGNATURE = ";
         switch (count) {
         case 0:
             name = genName(classNamePrefix, returnType);
+            signatureString += genSignature(returnType);
             break;
         case 1:
             name = genName(classNamePrefix, returnType, params[0]);
+            signatureString += genSignature(returnType, params[0]);
             break;
         case 2:
             name = genName(classNamePrefix, returnType, params[0], params[1]);
+            signatureString += genSignature(returnType, params[0], params[1]);
             break;
         case 3:
             name = genName(classNamePrefix, returnType, params[0], params[1],
+                    params[2]);
+            signatureString += genSignature(returnType, params[0], params[1],
                     params[2]);
             break;
         case 4:
             name = genName(classNamePrefix, returnType, params[0], params[1],
                     params[2], params[3]);
+            signatureString += genSignature(returnType, params[0], params[1],
+                    params[2], params[3]);
             break;
         case 5:
             name = genName(classNamePrefix, returnType, params[0], params[1],
+                    params[2], params[3], params[4]);
+            signatureString += genSignature(returnType, params[0], params[1],
                     params[2], params[3], params[4]);
             break;
         default:
             throw new IllegalArgumentException("Too many parameters: " + count);
         }
-        return name;
+        return new String[] { name, signatureString };
     }
 
     /** Generate the parameter list. */
@@ -340,6 +373,49 @@ public class GenFunc {
             result[i] = PARAM_TYPES3[params[i]];
         }
         return result;
+    }
+
+    /** Generated the interface name for 0-arg function. */
+    private static String genSignature(final int returnType) {
+        return String.format(SIGN_FORMAT[0], SIGN_RETURN_TYPES[returnType]);
+    }
+
+    /** Generated the interface name for 1-arg function. */
+    private static String genSignature(final int returnType, final int a0) {
+        return String.format(SIGN_FORMAT[1], SIGN_RETURN_TYPES[returnType],
+                SIGN_PARAM_TYPES[a0]);
+    }
+
+    /** Generated the interface name for 2-arg function. */
+    private static String genSignature(final int returnType, final int a0,
+            final int a1) {
+        return String.format(SIGN_FORMAT[2], SIGN_RETURN_TYPES[returnType],
+                SIGN_PARAM_TYPES[a0], SIGN_PARAM_TYPES[a1]);
+    }
+
+    /** Generated the interface name for 3-arg function. */
+    private static String genSignature(final int returnType, final int a0,
+            final int a1, final int a2) {
+        return String.format(SIGN_FORMAT[3], SIGN_RETURN_TYPES[returnType],
+                SIGN_PARAM_TYPES[a0], SIGN_PARAM_TYPES[a1],
+                SIGN_PARAM_TYPES[a2]);
+    }
+
+    /** Generated the interface name for 4-arg function. */
+    private static String genSignature(final int returnType, final int a0,
+            final int a1, final int a2, final int a3) {
+        return String.format(SIGN_FORMAT[4], SIGN_RETURN_TYPES[returnType],
+                SIGN_PARAM_TYPES[a0], SIGN_PARAM_TYPES[a1],
+                SIGN_PARAM_TYPES[a2], SIGN_PARAM_TYPES[a3]);
+    }
+
+    /** Generated the interface name for 5-arg function. */
+    private static String genSignature(final int returnType, final int a0,
+            final int a1, final int a2, final int a3, final int a4) {
+        return String.format(SIGN_FORMAT[5], SIGN_RETURN_TYPES[returnType],
+                SIGN_PARAM_TYPES[a0], SIGN_PARAM_TYPES[a1],
+                SIGN_PARAM_TYPES[a2], SIGN_PARAM_TYPES[a3],
+                SIGN_PARAM_TYPES[a4]);
     }
 
     /** Outputs the generated interface. */
