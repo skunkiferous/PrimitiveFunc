@@ -23,6 +23,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 
 import com.blockwithme.fn.gen.FuncFilter.ParamType;
+import com.blockwithme.fn.util.Functor;
 
 /**
  * <code>GenFunc</code> generates the source-code of the functions.
@@ -47,6 +48,43 @@ import com.blockwithme.fn.gen.FuncFilter.ParamType;
  */
 public class GenFunc {
 
+    /** The possible parameter types, except Object. */
+    private static final String[] _PARAM_TYPES = { "boolean", "byte", "char",
+            "short", "int", "long", "float", "double" };
+
+    /** The possible return types, including Object (generic R parameter). */
+    private static final String[] _RETURN_TYPES = { "void", "boolean", "byte",
+            "char", "short", "int", "long", "float", "double", "R" };
+
+    private static Class<?> FUNCTOR_INTERFACE = Functor.class;
+
+    /** Format for interface name generation. */
+    private static final String[] INTERFACE_NAME_FORMAT = { "%1$s0%2$s",
+            "%1$s1%2$s%3$s", "%1$s2%2$s%3$s%4$s", "%1$s3%2$s%3$s%4$s%5$s",
+            "%1$s4%2$s%3$s%4$s%5$s%6$s", "%1$s5%2$s%3$s%4$s%5$s%6$s%7$s", };
+
+    /** ID of parameter of type object. */
+    private static final int OBJECT_PARAM = _PARAM_TYPES.length;
+
+    /** ID of return of type object. */
+    private static final int OBJECT_RETURN = _RETURN_TYPES.length - 1;
+
+    /** The possible parameter types, including Object, capitalized for the interface name. */
+    private static final String[] PARAM_TYPES2 = { "Z", "B", "C", "S", "I",
+            "L", "F", "D", "O" };
+
+    /** The possible parameter types, as enum for faster filtering. */
+    private static final FuncFilter.ParamType[] PARAM_TYPES3 = {
+            FuncFilter.ParamType.Boolean, FuncFilter.ParamType.Byte,
+            FuncFilter.ParamType.Char, FuncFilter.ParamType.Short,
+            FuncFilter.ParamType.Int, FuncFilter.ParamType.Long,
+            FuncFilter.ParamType.Float, FuncFilter.ParamType.Double,
+            FuncFilter.ParamType.Object };
+
+    /** The possible return types, including Object, capitalized for the interface name. */
+    private static final String[] RETURN_TYPES2 = { "P", "Z", "B", "C", "S",
+            "I", "L", "F", "D", "O" };
+
     /** Usage */
     private static final String USAGE = "Usage:\n"
             + "    GenFunc OutputDirectory LicenseFile PackageName ClassNamePrefix MethodName Throws MinimumNumberOfArgs MaximumNumberOfArgs Filter\n"
@@ -64,46 +102,11 @@ public class GenFunc {
             + "Hint: It supports up to 5 as the maximum number of parameters,\n"
             + "      but that would be near 1 million interfaces; not recommended ... ;)\n";
 
-    /** Format for interface name generation. */
-    private static final String[] INTERFACE_NAME_FORMAT = { "%1$s0%2$s",
-            "%1$s1%2$s%3$s", "%1$s2%2$s%3$s%4$s", "%1$s3%2$s%3$s%4$s%5$s",
-            "%1$s4%2$s%3$s%4$s%5$s%6$s", "%1$s5%2$s%3$s%4$s%5$s%6$s%7$s", };
-
-    /** The possible parameter types, except Object. */
-    private static final String[] PARAM_TYPES = { "boolean", "byte", "char",
-            "short", "int", "long", "float", "double" };
-
-    /** The possible parameter types, as enum for faster filtering. */
-    private static final FuncFilter.ParamType[] PARAM_TYPES3 = {
-            FuncFilter.ParamType.Boolean, FuncFilter.ParamType.Byte,
-            FuncFilter.ParamType.Char, FuncFilter.ParamType.Short,
-            FuncFilter.ParamType.Int, FuncFilter.ParamType.Long,
-            FuncFilter.ParamType.Float, FuncFilter.ParamType.Double,
-            FuncFilter.ParamType.Object };
-
-    /** ID of parameter of type object. */
-    private static final int OBJECT_PARAM = PARAM_TYPES.length;
-
-    /** The possible parameter types, including Object, capitalized for the interface name. */
-    private static final String[] PARAM_TYPES2 = { "Boolean", "Byte", "Char",
-            "Short", "Int", "Long", "Float", "Double", "Object" };
-
-    /** The possible return types, including Object (generic R parameter). */
-    private static final String[] RETURN_TYPES = { "void", "boolean", "byte",
-            "char", "short", "int", "long", "float", "double", "R" };
-
-    /** ID of return of type object. */
-    private static final int OBJECT_RETURN = RETURN_TYPES.length - 1;
-
-    /** The possible return types, including Object, capitalized for the interface name. */
-    private static final String[] RETURN_TYPES2 = { "Void", "Boolean", "Byte",
-            "Char", "Short", "Int", "Long", "Float", "Double", "Object" };
+    /** Generator class name. */
+    public static final String GENERATOR = GenFunc.class.getName();
 
     /** Maximum number of parameters. */
     public static final int MAXIMUM_PARAMETERS = INTERFACE_NAME_FORMAT.length - 1;
-
-    /** Generator class name. */
-    public static final String GENERATOR = GenFunc.class.getName();
 
     /**
      * Generates the functions.
@@ -117,14 +120,14 @@ public class GenFunc {
             final int numberOfArgs, final FuncFilter filter) {
         int result = 0;
         for (int r = 0; r <= OBJECT_RETURN; r++) {
-            final String returnType = RETURN_TYPES[r];
-            final ParamType returnType2 = (r == 0) ? ParamType.Void
+            final String returnType = _RETURN_TYPES[r];
+            final ParamType returnType2 = r == 0 ? ParamType.Void
                     : PARAM_TYPES3[r - 1];
             final int[] params = new int[numberOfArgs];
             int current = 0;
             boolean again = true;
             while (again) {
-                if ((filter == null)
+                if (filter == null
                         || filter
                                 .accept(genParameterList2(params), returnType2)) {
                     final String name = genName2(classNamePrefix, r, params);
@@ -143,7 +146,7 @@ public class GenFunc {
                     again = false;
                 } else {
                     String s = Integer.toString(++current,
-                            PARAM_TYPES.length + 1);
+                            _PARAM_TYPES.length + 1);
                     if (s.length() <= numberOfArgs) {
                         while (s.length() < numberOfArgs) {
                             s = "0" + s;
@@ -182,9 +185,11 @@ public class GenFunc {
         System.out.println("    Function filter:              " + filter);
         String content = fileHeader;
         content += "\npackage " + packageName + ";\n\n";
+        content += "\nimport " + FUNCTOR_INTERFACE.getName() + ";\n\n";
         content += "/**\n * Primitive Function Interface <ode>%1$s</code>.\n";
         content += " * Generated automatically by " + GENERATOR + "\n */\n";
-        content += "public interface %1$s {\n";
+        content += "public interface %1$s extends "
+                + FUNCTOR_INTERFACE.getSimpleName() + " {\n";
         content += "    /** Function <code>" + methodName + "</code> */\n";
         content += "    %2$s " + methodName + "(%3$s)" + throwsStr + ";\n";
         content += "}\n";
@@ -210,7 +215,7 @@ public class GenFunc {
                 genericParams++;
             }
         }
-        final boolean returnGeneric = (returnType == OBJECT_RETURN);
+        final boolean returnGeneric = returnType == OBJECT_RETURN;
         if (genericParams == 0) {
             if (!returnGeneric) {
                 return "";
@@ -321,7 +326,7 @@ public class GenFunc {
             if (p == OBJECT_PARAM) {
                 result += String.valueOf(genParam++);
             } else {
-                result += PARAM_TYPES[p];
+                result += _PARAM_TYPES[p];
             }
             result += " p" + i;
         }
@@ -370,7 +375,7 @@ public class GenFunc {
         if (fileHeader != null) {
             final String h = fileHeader.trim();
             if (!h.isEmpty()) {
-                if (!(h.startsWith("/*") && h.endsWith("*/") && (h.length() > 3))) {
+                if (!(h.startsWith("/*") && h.endsWith("*/") && h.length() > 3)) {
                     throw new IllegalArgumentException(
                             "fileHeader should contain nothing, or a C-style comment: "
                                     + fileHeader);
@@ -386,11 +391,11 @@ public class GenFunc {
         boolean canBeDot = false;
         boolean identifierStart = true;
         for (final char c : packageName.toCharArray()) {
-            if (!canBeDot && (c == '.')) {
+            if (!canBeDot && c == '.') {
                 throw new IllegalArgumentException("packageName is invalid: "
                         + packageName);
             }
-            canBeDot = (c != '.');
+            canBeDot = c != '.';
             if (canBeDot) {
                 if (identifierStart) {
                     if (!Character.isJavaIdentifierStart(c)) {
@@ -404,7 +409,7 @@ public class GenFunc {
                     }
                 }
             }
-            identifierStart = (c == '.');
+            identifierStart = c == '.';
         }
         if (classNamePrefix == null) {
             throw new IllegalArgumentException("classNamePrefix is null");
@@ -448,14 +453,12 @@ public class GenFunc {
                 }
             }
         }
-        if ((minimumNumberOfArgs < 0)
-                || (minimumNumberOfArgs > MAXIMUM_PARAMETERS)) {
+        if (minimumNumberOfArgs < 0 || minimumNumberOfArgs > MAXIMUM_PARAMETERS) {
             throw new IllegalArgumentException(
                     "minimumNumberOfArgs must be within [0,"
                             + MAXIMUM_PARAMETERS + "]: " + minimumNumberOfArgs);
         }
-        if ((maximumNumberOfArgs < 0)
-                || (maximumNumberOfArgs > MAXIMUM_PARAMETERS)) {
+        if (maximumNumberOfArgs < 0 || maximumNumberOfArgs > MAXIMUM_PARAMETERS) {
             throw new IllegalArgumentException(
                     "maximumNumberOfArgs must be within [0,"
                             + MAXIMUM_PARAMETERS + "]: " + maximumNumberOfArgs);
@@ -467,7 +470,7 @@ public class GenFunc {
         }
 
         FuncFilter filter = null;
-        if ((filterType != null) && !filterType.isEmpty()) {
+        if (filterType != null && !filterType.isEmpty()) {
             try {
                 filter = (FuncFilter) Class.forName(filterType).newInstance();
             } catch (InstantiationException | IllegalAccessException
@@ -476,7 +479,7 @@ public class GenFunc {
                         + filterType + ")", e);
             }
         }
-        doGenerate(outputrDirectory, (fileHeader == null) ? "" : fileHeader,
+        doGenerate(outputrDirectory, fileHeader == null ? "" : fileHeader,
                 packageName, classNamePrefix, methodName, throwsStr,
                 minimumNumberOfArgs, maximumNumberOfArgs, filter);
     }
@@ -520,14 +523,15 @@ public class GenFunc {
                     "maximumNumberOfArgs is not a number", e);
         }
         String outDirFullPath = outputrDirectory;
-        if (!outDirFullPath.endsWith(File.separator))
+        if (!outDirFullPath.endsWith(File.separator)) {
             outDirFullPath += File.separator;
+        }
 
         outDirFullPath += packageName.replace('.', File.separatorChar);
         final File dir = new File(outDirFullPath);
 
         String fileHeader = "";
-        if ((licenseFile != null) && !licenseFile.isEmpty()) {
+        if (licenseFile != null && !licenseFile.isEmpty()) {
             final File lic = new File(licenseFile).getAbsoluteFile();
             if (!lic.exists()) {
                 throw new IllegalArgumentException(
@@ -548,7 +552,7 @@ public class GenFunc {
             }
         }
         String throwsStr2 = "";
-        if ((throwsStr != null) && !throwsStr.isEmpty()) {
+        if (throwsStr != null && !throwsStr.isEmpty()) {
             throwsStr2 = " throws " + throwsStr;
         }
         generate(dir, fileHeader, packageName, classNamePrefix, methodName,
@@ -570,9 +574,8 @@ public class GenFunc {
             final String methodName = args[4].trim();
             final String minimumNumberOfArgs = args[5].trim();
             final String maximumNumberOfArgs = args[6].trim();
-            final String filterType = (args.length == 7) ? null : args[7]
-                    .trim();
-            String throwsStr = (args.length < 9) ? "" : args[8];
+            final String filterType = args.length == 7 ? null : args[7].trim();
+            String throwsStr = args.length < 9 ? "" : args[8];
             if (throwsStr == null) {
                 throwsStr = "";
             }

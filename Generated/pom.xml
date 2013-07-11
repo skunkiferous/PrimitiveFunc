@@ -38,9 +38,9 @@
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
-		<packageName>com.blockwithme.func</packageName>
+		<packageName>com.blockwithme.fn</packageName>
 		<licenseFile>${project.basedir}/../APACHE_LICENSE_HEADER.txt</licenseFile>
-		<interfaceName>Func</interfaceName>
+		<interfaceName>F</interfaceName>
 		<function>apply</function>
 		<minParam>0</minParam>
 		<maxParam>4</maxParam>
