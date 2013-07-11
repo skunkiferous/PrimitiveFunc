@@ -12,7 +12,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.blockwithme</groupId>
 	<artifactId>PrimitiveFunc-Generated</artifactId>
-	<version>0.0.3</version>
+	<version>1.0.0</version>
 
 	<name>PrimitiveFunc-Generated</name>
 	<description>Sub project of PrimitiveFunc - actually generates 'Function' interface based on user inputs.</description>
@@ -21,19 +21,19 @@
 	</organization>
 	<url>https://github.com/skunkiferous/PrimitiveFunc</url>
 
-    	<scm>
-        	<connection>scm:git:git@github.com:skunkiferous/PrimitiveFunc.git</connection>
-        	<developerConnection>scm:git:git@github.com:skunkiferous/PrimitiveFunc.git</developerConnection>
-        	<url>git@github.com:skunkiferous/PrimitiveFunc.git</url>
-    	</scm>
+	<scm>
+		<connection>scm:git:git@github.com:skunkiferous/PrimitiveFunc.git</connection>
+		<developerConnection>scm:git:git@github.com:skunkiferous/PrimitiveFunc.git</developerConnection>
+		<url>git@github.com:skunkiferous/PrimitiveFunc.git</url>
+	</scm>
 
-    	<developers>
-        	<developer>
-            		<id>skunkiferous</id>
-            		<name>Sebastien Diot</name>
-            		<email>s.diot@eurodata.de</email>
-        	</developer>
-    	</developers>
+	<developers>
+		<developer>
+			<id>skunkiferous</id>
+			<name>Sebastien Diot</name>
+			<email>s.diot@eurodata.de</email>
+		</developer>
+	</developers>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -44,7 +44,7 @@
 		<function>apply</function>
 		<minParam>0</minParam>
 		<maxParam>4</maxParam>
-		<filter>com.blockwithme.gen.func.OPlus4</filter>
+		<filter>com.blockwithme.fn.gen.OPlus4</filter>
 		<exceptions></exceptions>
 	</properties>
 
@@ -91,7 +91,7 @@
 								<packageName>com.blockwithme.func</packageName>
 								<licenseFile>${project.basedir}/../APACHE_LICENSE_HEADER.txt</licenseFile>
 							</properties>
-							<mainClass>com.blockwithme.gen.func.GenFunc</mainClass>
+							<mainClass>com.blockwithme.fn.gen.GenFunc</mainClass>
 							<arguments>
 								<argument>${project.basedir}/src</argument>
 								<argument>${licenseFile}</argument>
@@ -110,7 +110,12 @@
 					<dependency>
 						<groupId>com.blockwithme</groupId>
 						<artifactId>PrimitiveFunc</artifactId>
-						<version>0.0.4</version>
+						<version>1.0.0</version>
+					</dependency>
+					<dependency>
+						<groupId>com.blockwithme</groupId>
+						<artifactId>PrimitiveFuncUtil</artifactId>
+						<version>1.0.0</version>
 					</dependency>
 				</dependencies>
 			</plugin>
@@ -157,13 +162,16 @@
 			</resource>
 		</resources>
 	</build>
-
 	<dependencies>
 		<dependency>
 			<groupId>com.blockwithme</groupId>
 			<artifactId>PrimitiveFunc</artifactId>
-			<version>0.0.4</version>
-			<scope>provided</scope>
+			<version>1.0.0</version>
+		</dependency>
+		<dependency>
+			<groupId>com.blockwithme</groupId>
+			<artifactId>PrimitiveFuncUtil</artifactId>
+			<version>1.0.0</version>
 		</dependency>
 	</dependencies>
 </project>
