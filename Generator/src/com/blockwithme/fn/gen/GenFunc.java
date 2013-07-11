@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.blockwithme.gen.func;
+package com.blockwithme.fn.gen;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -22,7 +22,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 
-import com.blockwithme.gen.func.FuncFilter.ParamType;
+import com.blockwithme.fn.gen.FuncFilter.ParamType;
 
 /**
  * <code>GenFunc</code> generates the source-code of the functions.

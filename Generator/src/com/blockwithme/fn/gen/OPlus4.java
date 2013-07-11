@@ -13,28 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.blockwithme.gen.func;
+package com.blockwithme.fn.gen;
 
 /**
- * Accepts interface parameter types, up to N, and then Object, plus N.
+ * Either less than 4 parameters, or starts with Object.
  *
  * @author monster
  */
-public class OPlusN implements FuncFilter {
-    private final int n;
-
+public class OPlus4 extends OPlusN {
     /** Constructor */
-    public OPlusN(final int theN) {
-        n = theN;
-    }
-
-    /* (non-Javadoc)
-     * @see com.blockwithme.gen.func.FuncFilter#accept(com.blockwithme.gen.func.FuncFilter.ParamType[])
-     */
-    @Override
-    public boolean accept(final ParamType[] paramTypes,
-            final ParamType returnType) {
-        return (paramTypes.length < n)
-                || ((paramTypes.length == n) && (paramTypes[0] == ParamType.Object));
+    public OPlus4() {
+        super(4);
     }
 }

@@ -13,16 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.blockwithme.gen.func;
+package com.blockwithme.fn.gen;
 
 /**
- * Either less than 4 parameters, or starts with Object.
+ * Allows to filter-out specific functions.
  *
  * @author monster
  */
-public class OPlus4 extends OPlusN {
-    /** Constructor */
-    public OPlus4() {
-        super(4);
+public interface FuncFilter {
+    /** Void is only used for return type. */
+    public enum ParamType {
+        Boolean, Byte, Char, Short, Int, Long, Float, Double, Object, Void
     }
+
+    /** Returns true, if the function interface should be created. */
+    boolean accept(final ParamType[] paramTypes, final ParamType returnType);
 }

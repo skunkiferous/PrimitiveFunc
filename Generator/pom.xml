@@ -12,7 +12,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.blockwithme</groupId>
 	<artifactId>PrimitiveFunc</artifactId>
-	<version>0.0.4</version>
+	<version>1.0.0</version>
 
 	<name>PrimitiveFunc</name>
 	<description>Finally fills the gap of using generic "Function" interfaces in Java, that do NOT require you to turn your input or output of primitive type into primitive wrappers, therefore pointlessly creating garbage.</description>
