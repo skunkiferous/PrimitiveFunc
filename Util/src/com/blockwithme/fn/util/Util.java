@@ -5,10 +5,11 @@ package com.blockwithme.fn.util;
 
 import java.lang.reflect.Field;
 
-// TODO: Auto-generated Javadoc
 /**
  * Provides utility methods to retrieve Functor interfaces from a signature
  * and the signatures of a particular Functor interface.
+ *
+ * @see com.blockwithme.fn.gen.GenFunc
  *
  * @author tarung
  *
@@ -34,11 +35,12 @@ public class Util {
     private final String packageName;
 
     /**
-     * Gets the signature of a particular Functor interface class.
+     * Gets the signature of a particular Functor interface.
      *
-     * @param theFunctor the Functor interface class instance
-     * @return the signature of the Function in a particular Functor interface.
-     * An array of classes, the function return type being as the first element.
+     * @param theFunctor the Type of Functor interface .
+     * @return the signature of the Function in the Functor interface.
+     * An array of types (classes), return type being as the first element
+     * and the parameter types as subsequent elements.
      */
     public static Class<?>[] getSignature(
             final Class<? extends Functor> theFunctor) {
@@ -53,38 +55,52 @@ public class Util {
     }
 
     /**
-     * Gets the signature.
+     * Gets the signature of a particular Functor interface.
      *
-     * @param theFunctor the functor
-     * @return the signature
+     * @param theFunctor the Functor instance.
+     * @return the signature of the Function in the Functor interface.
+     * An array of types (classes), return type being as the first element
+     * and the parameter types as subsequent elements.
      */
     public static Class<?>[] getSignature(final Functor theFunctor) {
         return getSignature(theFunctor.getClass());
     }
 
-    /**
-     * Instantiates a new util.
-     */
+    /** Instantiates the util with default values. The package name of generated
+     * Functor interfaces defaults to "com.blockwithme.fn" and the class prefix
+     * defaults to "F" when this constructor is used
+     *
+     * @see com.blockwithme.fn.gen.GenFunc
+     * */
     public Util() {
         this(PACKAGE_NAME, CLASS_NAME_PREFIX);
     }
 
-    /**
-     * Instantiates a new util.
+    /** Instantiates a new util.
      *
-     * @param thePackageName the package name
-     * @param theClassPrefix the class prefix
+     * @param thePackageName the package name of generated Functor interfaces.
+     * @param theClassPrefix the class prefix.
+     *
+     * @see com.blockwithme.fn.gen.GenFunc
      */
     public Util(final String thePackageName, final String theClassPrefix) {
+        if (thePackageName == null) {
+            throw new IllegalArgumentException("thePackageName is null");
+        }
+        if (theClassPrefix == null) {
+            throw new IllegalArgumentException("theClassPrefix is null");
+        }
         packageName = thePackageName;
         classPrefix = theClassPrefix;
     }
 
-    /**
-     * Gets the functor.
+    /** Gets the functor for a given signature.
      *
-     * @param signature the signature
-     * @return the functor
+     * @param signature the signature of the Function An array of types (classes),
+     * where the return type being as the first element and the parameter types as subsequent elements.
+     * Expects the primitive types (Byte.TYPE) instead of the wrapper types (Byte.class).
+     *
+     * @return the Type of Functor interface
      */
     public Class<? extends Functor> getFunctor(final Class... theSignature) {
 
@@ -132,4 +148,5 @@ public class Util {
             throw new IllegalStateException(e.getMessage(), e);
         }
     }
+
 }
