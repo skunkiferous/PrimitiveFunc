@@ -59,7 +59,12 @@ public abstract class Tuple {
     }
 
     /** Returns the number of fields */
-    public abstract int size();
+    public final int size() {
+        return getSignature().length;
+    }
+
+    /** Returns the type of the fields */
+    public abstract Class<?>[] getSignature();
 
     /** Returns the field with the given number */
     public abstract Object get(final int fieldNumber);

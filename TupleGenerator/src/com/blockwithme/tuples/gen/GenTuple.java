@@ -127,11 +127,10 @@ public class GenTuple {
                 final String toString = genToString(params);
                 final String genParams = genGenericsParams(params);
                 final String paramList = genParameterList(params);
-                final String size = String.valueOf(params.length);
                 final String get = genGet(params);
                 final String content = String.format(format, name, genParams,
                         signature, paramList, fields, ctr, equals, hashCode,
-                        toString, size, get);
+                        toString, get);
                 final File file = new File(outputrDirectory, name + ".java");
                 outputClass(file, content);
             }
@@ -190,6 +189,7 @@ public class GenTuple {
         content += "    }\n\n";
         content += "    /** equals */\n";
         content += "    @Override\n";
+        content += "    @SuppressWarnings(\"all\")\n";
         content += "    public final boolean equals(final Object other) {\n";
         content += "        if (!(other instanceof %1$s)) {\n";
         content += "            return false;\n";
@@ -207,15 +207,15 @@ public class GenTuple {
         content += "    public final String toString() {\n";
         content += "%9$s";
         content += "    }\n\n";
-        content += "    /** Returns the number of fields */\n";
+        content += "    /** Returns the type of the fields */\n";
         content += "    @Override\n";
-        content += "    public final int size() {\n";
-        content += "        return %10$s;\n";
+        content += "    public final Class<?>[] getSignature() {\n";
+        content += "        return SIGNATURE;\n";
         content += "    }\n\n";
         content += "    /** Returns the field with the given number */\n";
         content += "    @Override\n";
         content += "    public final Object get(final int fieldNumber) {\n";
-        content += "%11$s";
+        content += "%10$s";
         content += "    }\n";
         content += "}\n";
         int total = 0;
