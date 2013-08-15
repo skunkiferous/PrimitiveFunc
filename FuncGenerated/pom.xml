@@ -37,6 +37,15 @@
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<maven-compiler-plugin-version>2.5.1</maven-compiler-plugin-version>
+		<maven-clean-plugin-version>2.5</maven-clean-plugin-version>
+		<exec-maven-plugin-version>1.2.1</exec-maven-plugin-version>
+		<maven-bundle-plugin-version>2.4.0</maven-bundle-plugin-version>
+		<maven-jar-plugin-version>2.4</maven-jar-plugin-version>
+		<maven-source-plugin-version>2.2.1</maven-source-plugin-version>
+		<java-source-version>1.7</java-source-version>
+		<java-target-version>1.7</java-target-version>
+
 		<packageName>com.blockwithme.fn</packageName>
 		<licenseFile>${project.basedir}/../APACHE_LICENSE_HEADER.txt</licenseFile>
 		<interfaceName>F</interfaceName>
@@ -45,24 +54,24 @@
 		<maxParam>4</maxParam>
 		<filter>com.blockwithme.fn.gen.OPlus4</filter>
 		<exceptions></exceptions>
-	</properties>
+    </properties>
 
 	<build>
 		<sourceDirectory>src</sourceDirectory>
 		<plugins>
 			<plugin>
 				<artifactId>maven-compiler-plugin</artifactId>
-				<version>2.3.2</version>
+				<version>${maven-compiler-plugin-version}</version>
 				<configuration>
-					<source>1.7</source>
-					<target>1.7</target>
+					<source>${java-source-version}</source>
+					<target>${java-target-version}</target>
 					<compilerArgument>-g:none</compilerArgument>
 				</configuration>
 			</plugin>
 			<!-- To clean the generated sources. -->
 			<plugin>
 				<artifactId>maven-clean-plugin</artifactId>
-				<version>2.5</version>
+				<version>${maven-clean-plugin-version}</version>
 				<configuration>
 					<filesets>
 						<fileset>
@@ -78,7 +87,7 @@
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>exec-maven-plugin</artifactId>
-				<version>1.1.1</version>
+				<version>${exec-maven-plugin-version}</version>
 				<executions>
 					<execution>
 						<phase>generate-sources</phase>
@@ -130,19 +139,19 @@
 						</goals>
 					</execution>
 				</executions>
-				<version>2.3.7</version>
+				<version>${maven-bundle-plugin-version}</version>
 				<extensions>true</extensions>
 				<configuration>
 					<manifestLocation>${project.basedir}/META-INF</manifestLocation>
 					<instructions>
 						<Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
-						<Export-Package>com.blockwithme.gen.func</Export-Package>
+						<Export-Package>com.blockwithme.fn</Export-Package>
 					</instructions>
 				</configuration>
 			</plugin>
 			<plugin>
 				<artifactId>maven-jar-plugin</artifactId>
-				<version>2.4</version>
+				<version>${maven-jar-plugin-version}</version>
 				<configuration>
 					<archive>
 						<manifestFile>${project.basedir}/META-INF/MANIFEST.MF</manifestFile>
@@ -153,6 +162,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-source-plugin</artifactId>
+				<version>${maven-source-plugin-version}</version>
 				<executions>
 					<execution>
 						<id>attach-sources</id>
@@ -173,11 +183,46 @@
 				</includes>
 			</resource>
 		</resources>
+		<pluginManagement>
+			<plugins>
+				<!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build itself.-->
+				<plugin>
+					<groupId>org.eclipse.m2e</groupId>
+					<artifactId>lifecycle-mapping</artifactId>
+					<version>1.0.0</version>
+					<configuration>
+						<lifecycleMappingMetadata>
+							<pluginExecutions>
+								<pluginExecution>
+									<pluginExecutionFilter>
+										<groupId>
+											org.codehaus.mojo
+										</groupId>
+										<artifactId>
+											exec-maven-plugin
+										</artifactId>
+										<versionRange>
+											[1.1.1,)
+										</versionRange>
+										<goals>
+											<goal>java</goal>
+										</goals>
+									</pluginExecutionFilter>
+									<action>
+										<ignore></ignore>
+									</action>
+								</pluginExecution>
+							</pluginExecutions>
+						</lifecycleMappingMetadata>
+					</configuration>
+				</plugin>
+			</plugins>
+		</pluginManagement>
 	</build>
 	<dependencies>
 		<dependency>
 			<groupId>com.blockwithme</groupId>
-			<artifactId>PrimitiveFunc</artifactId>
+			<artifactId>FuncGenerator</artifactId>
 			<version>1.0.0</version>
 		</dependency>
 		<dependency>

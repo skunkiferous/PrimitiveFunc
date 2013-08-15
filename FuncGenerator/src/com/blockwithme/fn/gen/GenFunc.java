@@ -18,9 +18,11 @@ package com.blockwithme.fn.gen;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.Scanner;
 
 import com.blockwithme.fn.gen.FuncFilter.ParamType;
 import com.blockwithme.fn.util.Functor;
@@ -32,7 +34,7 @@ import com.blockwithme.fn.util.Functor;
  *
  * OutputDirectory is the directory where the source files are generated. For example, C:\temp\funcs
  * LicenseFile is the path to the license file, to use as header. Can be "" or simply empty. For example, APACHE_LICENSE_HEADER.txt.
- * PackageName is the name of the package in which the interfaces are created, for example "com,test".
+ * PackageName is the name of the package in which the interfaces are created, for example "com.test".
  * ClassNamePrefix the interface name prefix, for example "Func"
  * MethodName is the method name, for example "apply" or "call".
  * Throws can contain the optional name of a thrown "Throwable". Leave blank for no "throws". Example: java.io.IOException
@@ -206,7 +208,7 @@ public class GenFunc {
         String content = fileHeader;
         content += "\npackage " + packageName + ";\n\n";
         content += "\nimport " + FUNCTOR_INTERFACE.getName() + ";\n\n";
-        content += "/**\n * Primitive Function Interface <ode>%1$s</code>.\n";
+        content += "/**\n * Primitive Function Interface <code>%1$s</code>.\n";
         content += " * Generated automatically by " + GENERATOR + "\n */\n";
         content += "public interface %1$s extends "
                 + FUNCTOR_INTERFACE.getSimpleName() + " {\n";
@@ -420,6 +422,15 @@ public class GenFunc {
 
     /** Outputs the generated interface. */
     private static void outputInterface(final File file, final String content) {
+        if (file.exists()) {
+            try (Scanner scanner = new Scanner(file);) {
+                if (content.equals(scanner.useDelimiter("\\Z").next())) {
+                    return;
+                }
+            } catch (final FileNotFoundException e) {
+                // Should not happen, since we checked ...
+            }
+        }
         try (FileWriter fw = new FileWriter(file);) {
             fw.write(content);
         } catch (final IOException e) {

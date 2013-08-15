@@ -10,6 +10,4 @@ log
 target
 bin
 conf
-source-generation
-META-INF
-/nbproject/private/
+src

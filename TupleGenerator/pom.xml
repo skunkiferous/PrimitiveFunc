@@ -11,11 +11,11 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.blockwithme</groupId>
-	<artifactId>PrimitiveFunc</artifactId>
+	<artifactId>TupleGenerator</artifactId>
 	<version>1.0.0</version>
 
-	<name>PrimitiveFunc</name>
-	<description>Finally fills the gap of using generic "Function" interfaces in Java,
+	<name>TupleGenerator</name>
+	<description>Finally fills the gap of using generic "Tuples" in Java,
 	that do NOT require you to turn your input or output of primitive type into primitive wrappers,
 	therefore pointlessly creating garbage.</description>
 	<organization>
@@ -38,6 +38,14 @@
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<maven-compiler-plugin-version>2.5.1</maven-compiler-plugin-version>
+		<maven-clean-plugin-version>2.5</maven-clean-plugin-version>
+		<exec-maven-plugin-version>1.2.1</exec-maven-plugin-version>
+		<maven-bundle-plugin-version>2.4.0</maven-bundle-plugin-version>
+		<maven-jar-plugin-version>2.4</maven-jar-plugin-version>
+		<maven-source-plugin-version>2.2.1</maven-source-plugin-version>
+		<java-source-version>1.7</java-source-version>
+		<java-target-version>1.7</java-target-version>
 	</properties>
 
 	<build>
@@ -45,10 +53,10 @@
 		<plugins>
 			<plugin>
 				<artifactId>maven-compiler-plugin</artifactId>
-				<version>2.3.2</version>
+				<version>${maven-compiler-plugin-version}</version>
 				<configuration>
-					<source>1.7</source>
-					<target>1.7</target>
+					<source>${java-source-version}</source>
+					<target>${java-target-version}</target>
 				</configuration>
 			</plugin>
 			<plugin>
@@ -63,19 +71,19 @@
 						</goals>
 					</execution>
 				</executions>
-				<version>2.3.7</version>
+				<version>${maven-bundle-plugin-version}</version>
 				<extensions>true</extensions>
 				<configuration>
 					<manifestLocation>${project.basedir}/META-INF</manifestLocation>
 					<instructions>
 						<Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
-						<Export-Package>com.blockwithme.gen.func</Export-Package>
+						<Export-Package>com.blockwithme.tuples</Export-Package>
 					</instructions>
 				</configuration>
 			</plugin>
 			<plugin>
 				<artifactId>maven-jar-plugin</artifactId>
-				<version>2.4</version>
+				<version>${maven-jar-plugin-version}</version>
 				<configuration>
 					<archive>
 						<manifestFile>${project.basedir}/META-INF/MANIFEST.MF</manifestFile>

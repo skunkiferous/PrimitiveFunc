@@ -1,7 +1,7 @@
 package com.blockwithme.fn.util;
 
 /** The Functor interface extended by all the Function interfaces
- * that are generated PrimitiveFunc Generator
+ * that are generated GenFunc Generator
  *
  * @author tarung
  *

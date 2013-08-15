@@ -1,0 +1,228 @@
+<!-- * Copyright (C) 2013 Sebastien Diot. * * Licensed under the Apache License,
+	Version 2.0 (the "License"); * you may not use this file except in compliance
+	with the License. * You may obtain a copy of the License at * * http://www.apache.org/licenses/LICENSE-2.0
+	* * Unless required by applicable law or agreed to in writing, software *
+	distributed under the License is distributed on an "AS IS" BASIS, * WITHOUT
+	WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. * See the
+	License for the specific language governing permissions and * limitations
+	under the License. -->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>com.blockwithme</groupId>
+	<artifactId>PrimitiveFunc-Generated</artifactId>
+	<version>1.0.0</version>
+
+	<name>PrimitiveFunc-Generated</name>
+	<description>Sub project of PrimitiveFunc - actually generates 'Function' interface based on user inputs.</description>
+	<organization>
+		<name>Sebastien Diot</name>
+	</organization>
+	<url>https://github.com/skunkiferous/PrimitiveFunc</url>
+
+	<scm>
+		<connection>scm:git:git@github.com:skunkiferous/PrimitiveFunc.git</connection>
+		<developerConnection>scm:git:git@github.com:skunkiferous/PrimitiveFunc.git</developerConnection>
+		<url>git@github.com:skunkiferous/PrimitiveFunc.git</url>
+	</scm>
+
+	<developers>
+		<developer>
+			<id>skunkiferous</id>
+			<name>Sebastien Diot</name>
+			<email>s.diot@eurodata.de</email>
+		</developer>
+	</developers>
+
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<maven-compiler-plugin-version>2.5.1</maven-compiler-plugin-version>
+		<maven-clean-plugin-version>2.5</maven-clean-plugin-version>
+		<exec-maven-plugin-version>1.2.1</exec-maven-plugin-version>
+		<maven-bundle-plugin-version>2.4.0</maven-bundle-plugin-version>
+		<maven-jar-plugin-version>2.4</maven-jar-plugin-version>
+		<maven-source-plugin-version>2.2.1</maven-source-plugin-version>
+		<java-source-version>1.7</java-source-version>
+		<java-target-version>1.7</java-target-version>
+
+		<packageName>com.blockwithme.tuples</packageName>
+		<licenseFile>${project.basedir}/../APACHE_LICENSE_HEADER.txt</licenseFile>
+		<minParam>1</minParam>
+		<maxParam>5</maxParam>
+		<filter>com.blockwithme.tuples.gen.OPlus5</filter>
+	</properties>
+
+	<build>
+		<sourceDirectory>src</sourceDirectory>
+		<plugins>
+			<plugin>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>${maven-compiler-plugin-version}</version>
+				<configuration>
+					<source>${java-source-version}</source>
+					<target>${java-target-version}</target>
+					<compilerArgument>-g:none</compilerArgument>
+				</configuration>
+			</plugin>
+			<!-- To clean the generated sources. -->
+			<plugin>
+				<artifactId>maven-clean-plugin</artifactId>
+				<version>${maven-clean-plugin-version}</version>
+				<configuration>
+					<filesets>
+						<fileset>
+							<directory>${project.basedir}/src</directory>
+						</fileset>
+						<fileset>
+							<directory>${project.basedir}/target</directory>
+						</fileset>
+					</filesets>
+				</configuration>
+			</plugin>
+			<!-- To generate sources -->
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>exec-maven-plugin</artifactId>
+				<version>${exec-maven-plugin-version}</version>
+				<executions>
+					<execution>
+						<phase>generate-sources</phase>
+						<goals>
+							<goal>java</goal>
+						</goals>
+						<configuration>
+							<properties>
+								<packageName>com.blockwithme.func</packageName>
+								<licenseFile>${project.basedir}/../APACHE_LICENSE_HEADER.txt</licenseFile>
+							</properties>
+							<mainClass>com.blockwithme.tuples.gen.GenTuple</mainClass>
+							<arguments>
+								<argument>${project.basedir}/src</argument>
+								<argument>${licenseFile}</argument>
+								<argument>${packageName}</argument>
+								<argument>${minParam}</argument>
+								<argument>${maxParam}</argument>
+								<argument>${filter}</argument>
+							</arguments>
+						</configuration>
+					</execution>
+				</executions>
+				<dependencies>
+					<dependency>
+						<groupId>com.blockwithme</groupId>
+						<artifactId>PrimitiveFunc</artifactId>
+						<version>1.0.0</version>
+					</dependency>
+					<dependency>
+						<groupId>com.blockwithme</groupId>
+						<artifactId>PrimitiveFuncUtil</artifactId>
+						<version>1.0.0</version>
+					</dependency>
+				</dependencies>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.felix</groupId>
+				<artifactId>maven-bundle-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>bundle-manifest</id>
+						<phase>process-classes</phase>
+						<goals>
+							<goal>manifest</goal>
+						</goals>
+					</execution>
+				</executions>
+				<version>${maven-bundle-plugin-version}</version>
+				<extensions>true</extensions>
+				<configuration>
+					<manifestLocation>${project.basedir}/META-INF</manifestLocation>
+					<instructions>
+						<Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
+						<Export-Package>com.blockwithme.tuples.gen</Export-Package>
+					</instructions>
+				</configuration>
+			</plugin>
+			<plugin>
+				<artifactId>maven-jar-plugin</artifactId>
+				<version>${maven-jar-plugin-version}</version>
+				<configuration>
+					<archive>
+						<manifestFile>${project.basedir}/META-INF/MANIFEST.MF</manifestFile>
+					</archive>
+				</configuration>
+			</plugin>
+			<!-- To generate source jar -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-source-plugin</artifactId>
+				<version>${maven-source-plugin-version}</version>
+				<executions>
+					<execution>
+						<id>attach-sources</id>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+		<resources>
+			<resource>
+				<directory>${basedir}/..</directory>
+				<filtering>false</filtering>
+				<includes>
+					<include>LICENSE</include>
+					<include>README.md</include>
+				</includes>
+			</resource>
+		</resources>
+		<pluginManagement>
+			<plugins>
+				<!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build itself.-->
+				<plugin>
+					<groupId>org.eclipse.m2e</groupId>
+					<artifactId>lifecycle-mapping</artifactId>
+					<version>1.0.0</version>
+					<configuration>
+						<lifecycleMappingMetadata>
+							<pluginExecutions>
+								<pluginExecution>
+									<pluginExecutionFilter>
+										<groupId>
+											org.codehaus.mojo
+										</groupId>
+										<artifactId>
+											exec-maven-plugin
+										</artifactId>
+										<versionRange>
+											[1.1.1,)
+										</versionRange>
+										<goals>
+											<goal>java</goal>
+										</goals>
+									</pluginExecutionFilter>
+									<action>
+										<ignore></ignore>
+									</action>
+								</pluginExecution>
+							</pluginExecutions>
+						</lifecycleMappingMetadata>
+					</configuration>
+				</plugin>
+			</plugins>
+		</pluginManagement>
+	</build>
+	<dependencies>
+		<dependency>
+			<groupId>com.blockwithme</groupId>
+			<artifactId>TupleGenerator</artifactId>
+			<version>1.0.0</version>
+		</dependency>
+		<dependency>
+			<groupId>com.blockwithme</groupId>
+			<artifactId>PrimitiveFuncUtil</artifactId>
+			<version>1.0.0</version>
+		</dependency>
+	</dependencies>
+</project>

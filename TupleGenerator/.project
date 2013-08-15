@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-	<name>PrimitiveFuncUtil</name>
+	<name>TupleGenerator</name>
 	<comment></comment>
 	<projects>
 	</projects>
@@ -22,6 +22,7 @@
 		</buildCommand>
 	</buildSpec>
 	<natures>
+		<nature>org.eclipse.pde.PluginNature</nature>
 		<nature>org.eclipse.m2e.core.maven2Nature</nature>
 		<nature>org.eclipse.jdt.core.javanature</nature>
 		<nature>net.sourceforge.pmd.eclipse.plugin.pmdNature</nature>
