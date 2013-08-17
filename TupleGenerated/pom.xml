@@ -11,11 +11,11 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.blockwithme</groupId>
-	<artifactId>PrimitiveFunc-Generated</artifactId>
+	<artifactId>TupleGenerated</artifactId>
 	<version>1.0.0</version>
 
-	<name>PrimitiveFunc-Generated</name>
-	<description>Sub project of PrimitiveFunc - actually generates 'Function' interface based on user inputs.</description>
+	<name>TupleGenerated</name>
+	<description>Sub project of PrimitiveFunc - actually generates 'Tuples' classes based on user inputs.</description>
 	<organization>
 		<name>Sebastien Diot</name>
 	</organization>
@@ -49,7 +49,7 @@
 		<packageName>com.blockwithme.tuples</packageName>
 		<licenseFile>${project.basedir}/../APACHE_LICENSE_HEADER.txt</licenseFile>
 		<minParam>1</minParam>
-		<maxParam>5</maxParam>
+		<maxParam>4</maxParam>
 		<filter>com.blockwithme.tuples.gen.OPlus5</filter>
 	</properties>
 
@@ -62,7 +62,6 @@
 				<configuration>
 					<source>${java-source-version}</source>
 					<target>${java-target-version}</target>
-					<compilerArgument>-g:none</compilerArgument>
 				</configuration>
 			</plugin>
 			<!-- To clean the generated sources. -->
@@ -93,7 +92,7 @@
 						</goals>
 						<configuration>
 							<properties>
-								<packageName>com.blockwithme.func</packageName>
+								<packageName>com.blockwithme.tuples</packageName>
 								<licenseFile>${project.basedir}/../APACHE_LICENSE_HEADER.txt</licenseFile>
 							</properties>
 							<mainClass>com.blockwithme.tuples.gen.GenTuple</mainClass>
@@ -111,7 +110,7 @@
 				<dependencies>
 					<dependency>
 						<groupId>com.blockwithme</groupId>
-						<artifactId>PrimitiveFunc</artifactId>
+						<artifactId>TupleGenerator</artifactId>
 						<version>1.0.0</version>
 					</dependency>
 					<dependency>

@@ -102,7 +102,9 @@ public class Util {
      *
      * @return the Type of Functor interface.
      */
-    public Class<? extends Functor> getFunctor(final Class... theSignature) {
+    @SuppressWarnings("unchecked")
+    public Class<? extends Functor> getFunctor(
+            @SuppressWarnings("rawtypes") final Class... theSignature) {
 
         if (theSignature == null) {
             throw new IllegalArgumentException("theSignature is null");
