@@ -24,7 +24,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Scanner;
 
-import com.blockwithme.fn.util.Tuple;
+import com.blockwithme.fn.util.TupleBase;
 
 /**
  * <code>GenTuple</code> generates the source-code of the tuples.
@@ -50,7 +50,8 @@ public class GenTuple {
     private static final String[] _PARAM_TYPES = { "boolean", "byte", "char",
             "short", "int", "long", "float", "double" };
 
-    private static Class<?> TUPLE_INTERFACE = Tuple.class;
+    /** Base class of all tuples */
+    private static Class<?> TUPLE_BASE = TupleBase.class;
 
     /** Format for class name generation. */
     private static final String[] CLASS_NAME_FORMAT = { null, "T1%1$s",
@@ -174,11 +175,15 @@ public class GenTuple {
         System.out.println("    Function filter:              " + filter);
         String content = fileHeader;
         content += "\npackage " + packageName + ";\n\n";
-        content += "\nimport " + TUPLE_INTERFACE.getName() + ";\n\n";
+        content += "\nimport " + TUPLE_BASE.getName() + ";\n\n";
         content += "/**\n * Primitive Tuple Class <code>%1$s</code>.\n";
         content += " * Generated automatically by " + GENERATOR + "\n */\n";
         content += "public class %1$s%2$s extends "
-                + TUPLE_INTERFACE.getSimpleName() + " {\n";
+                + TUPLE_BASE.getSimpleName() + " {\n";
+        content += "\n";
+        content += "    /** serialVersionUID */\n";
+        content += "    private static final long serialVersionUID = 1L;\n";
+        content += "\n";
         content += "    /** SIGNATURE constant */\n";
         content += "    public static final %3$s" + "\n";
         content += "    \n";
@@ -200,12 +205,18 @@ public class GenTuple {
         content += "    /** hashCode */\n";
         content += "    @Override\n";
         content += "    public final int hashCode() {\n";
+        content += "        if (hashCode == 0) {\n";
         content += "%8$s";
+        content += "        }\n";
+        content += "        return hashCode;\n";
         content += "    }\n\n";
         content += "    /** toString */\n";
         content += "    @Override\n";
         content += "    public final String toString() {\n";
+        content += "        if (toString == null) {\n";
         content += "%9$s";
+        content += "        }\n";
+        content += "        return toString;\n";
         content += "    }\n\n";
         content += "    /** Returns the type of the fields */\n";
         content += "    @Override\n";
@@ -282,30 +293,30 @@ public class GenTuple {
     /** Generated the toString() method for the class definition. */
     private static String genToString(final int... params) {
         final StringBuilder buf = new StringBuilder(params.length * 100);
-        buf.append("        final StringBuilder buf = new StringBuilder(");
+        buf.append("            final StringBuilder buf = new StringBuilder(");
         buf.append(params.length * 10).append(");\n");
-        buf.append("        buf.append('(');\n");
+        buf.append("            buf.append('(');\n");
         for (int i = 0; i < params.length; i++) {
             if (i > 0) {
-                buf.append("        buf.append(',');\n");
+                buf.append("            buf.append(',');\n");
             }
-            buf.append("        buf.append(_").append(i).append(");\n");
+            buf.append("            buf.append(_").append(i).append(");\n");
         }
-        buf.append("        buf.append(')');\n");
-        buf.append("        return buf.toString();\n");
+        buf.append("            buf.append(')');\n");
+        buf.append("            toString = buf.toString();\n");
         return buf.toString();
     }
 
     /** Generated the hashCode() method for the class definition. */
     private static String genHashCode(final int... params) {
         final StringBuilder buf = new StringBuilder(params.length * 100);
-        buf.append("        final int prime = 31;\n");
-        buf.append("        int result = 1;\n");
+        buf.append("            final int prime = 31;\n");
+        buf.append("            int result = 1;\n");
         for (int i = 0; i < params.length; i++) {
-            buf.append("        result = prime * result + hash(_").append(i)
-                    .append(");\n");
+            buf.append("            result = prime * result + hash(_")
+                    .append(i).append(");\n");
         }
-        buf.append("        return result;\n");
+        buf.append("            hashCode = result;\n");
         return buf.toString();
     }
 

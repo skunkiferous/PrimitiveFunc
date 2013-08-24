@@ -1,71 +1,37 @@
+/*
+ * Copyright (C) 2013 Sebastien Diot.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.blockwithme.fn.util;
 
 /**
- * The Tuple interface extended by all the Tuple interfaces
+ * The Tuple interface is implemented by all the Tuple instances
  * that are generated GenTuple Generator
  *
  * @author sdiot
  */
-public abstract class Tuple {
-    /** Compares 2 objects. */
-    protected static boolean equals(final Object a, final Object b) {
-        return (a == null) ? (b == null) : a.equals(b);
-    }
-
-    /** Hashcode for boolean. */
-    protected static int hash(final boolean value) {
-        return value ? 123 : 456;
-    }
-
-    /** Hashcode for byte. */
-    protected static int hash(final byte value) {
-        return value;
-    }
-
-    /** Hashcode for short. */
-    protected static int hash(final short value) {
-        return value;
-    }
-
-    /** Hashcode for char. */
-    protected static int hash(final char value) {
-        return value;
-    }
-
-    /** Hashcode for int. */
-    protected static int hash(final int value) {
-        return value;
-    }
-
-    /** Hashcode for int. */
-    protected static int hash(final long value) {
-        return (int) (value ^ (value >>> 32));
-    }
-
-    /** Hashcode for float. */
-    protected static int hash(final float value) {
-        return Float.floatToIntBits(value);
-    }
-
-    /** Hashcode for double. */
-    protected static int hash(final double value) {
-        final long bits = Double.doubleToLongBits(value);
-        return (int) (bits ^ (bits >>> 32));
-    }
-
-    /** Hashcode for Objects. */
-    protected static int hash(final Object value) {
-        return value == null ? 1 : value.hashCode();
-    }
+public interface Tuple {
 
     /** Returns the number of fields */
-    public final int size() {
-        return getSignature().length;
-    }
+    public int size();
 
     /** Returns the type of the fields */
-    public abstract Class<?>[] getSignature();
+    public Class<?>[] getSignature();
 
     /** Returns the field with the given number */
-    public abstract Object get(final int fieldNumber);
+    public Object get(final int fieldNumber);
+
+    /** Converts the Tuple to an Object array. */
+    public Object[] toArray();
 }
