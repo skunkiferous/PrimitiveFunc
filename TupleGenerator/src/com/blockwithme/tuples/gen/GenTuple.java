@@ -25,6 +25,7 @@ import java.io.IOException;
 import java.util.Scanner;
 
 import com.blockwithme.fn.util.TupleBase;
+import com.blockwithme.fn.util.Util;
 
 /**
  * <code>GenTuple</code> generates the source-code of the tuples.
@@ -49,6 +50,10 @@ public class GenTuple {
     /** The possible parameter types, except Object. */
     private static final String[] _PARAM_TYPES = { "boolean", "byte", "char",
             "short", "int", "long", "float", "double" };
+
+    /** The parameter types default values. */
+    private static final String[] _PARAM_TYPES_DEFAULT = { "false", "(byte) 0",
+            "(char) 0", "(short) 0", "0", "0L", "0f", "0.0", "null" };
 
     /** Base class of all tuples */
     private static Class<?> TUPLE_BASE = TupleBase.class;
@@ -122,6 +127,7 @@ public class GenTuple {
                 final String name = generatedStrings[0];
                 final String signature = generatedStrings[1];
                 final String fields = genFields(params);
+                final String ctrdef = genDefaultConstructor(params);
                 final String ctr = genConstructor(params);
                 final String equals = genEquals(params);
                 final String hashCode = genHashCode(params);
@@ -129,9 +135,12 @@ public class GenTuple {
                 final String genParams = genGenericsParams(params);
                 final String paramList = genParameterList(params);
                 final String get = genGet(params);
+                final String apply = genApply(params);
+                final String fctr = genFunctor(Util.FUNC_PACKAGE_NAME,
+                        generatedStrings[0], genParams);
                 final String content = String.format(format, name, genParams,
                         signature, paramList, fields, ctr, equals, hashCode,
-                        toString, get);
+                        toString, get, ctrdef, fctr, apply);
                 final File file = new File(outputrDirectory, name + ".java");
                 outputClass(file, content);
             }
@@ -179,7 +188,7 @@ public class GenTuple {
         content += "/**\n * Primitive Tuple Class <code>%1$s</code>.\n";
         content += " * Generated automatically by " + GENERATOR + "\n */\n";
         content += "public class %1$s%2$s extends "
-                + TUPLE_BASE.getSimpleName() + " {\n";
+                + TUPLE_BASE.getSimpleName() + " implements %12$s {\n";
         content += "\n";
         content += "    /** serialVersionUID */\n";
         content += "    private static final long serialVersionUID = 1L;\n";
@@ -188,6 +197,10 @@ public class GenTuple {
         content += "    public static final %3$s" + "\n";
         content += "    \n";
         content += "%5$s";
+        content += "    /** Default Constructor */\n";
+        content += "    public %1$s() {\n";
+        content += "        this(%11$s);\n";
+        content += "    }\n\n";
         content += "    /** Constructor */\n";
         content += "    public %1$s(%4$s) {\n";
         content += "%6$s";
@@ -227,6 +240,10 @@ public class GenTuple {
         content += "    @Override\n";
         content += "    public final Object get(final int fieldNumber) {\n";
         content += "%10$s";
+        content += "    }\n\n";
+        content += "    /** Factory Function <code>apply</code> */\n";
+        content += "    public %1$s%2$s apply(%4$s) {\n";
+        content += "        return new %1$s%2$s(%13$s);\n";
         content += "    }\n";
         content += "}\n";
         int total = 0;
@@ -260,6 +277,17 @@ public class GenTuple {
         return result.substring(0, result.length() - 1) + ">";
     }
 
+    /** Generated the name of the functor interface. */
+    private static String genFunctor(final String functorPackage,
+            final String tupleName, final String genericsParams) {
+        final String name = Util.FUNC_CLASS_NAME_PREFIX + tupleName.charAt(1)
+                + "O" + tupleName.substring(2);
+        final String params = genericsParams.isEmpty() ? ">" : ","
+                + genericsParams.substring(1);
+        return functorPackage + "." + name + "<" + tupleName + genericsParams
+                + params;
+    }
+
     /** Generated the fields for the class definition. */
     private static String genFields(final int... params) {
         final StringBuilder buf = new StringBuilder(params.length * 100);
@@ -276,6 +304,18 @@ public class GenTuple {
             buf.append("    /** Tuple field #").append(i).append(" */\n");
             buf.append("    public final ").append(type).append(" _").append(i)
                     .append(";\n\n");
+        }
+        return buf.toString();
+    }
+
+    /** Generated the fields initialization for the class definition. */
+    private static String genDefaultConstructor(final int... params) {
+        final StringBuilder buf = new StringBuilder(params.length * 5);
+        for (int i = 0; i < params.length; i++) {
+            if (i > 0) {
+                buf.append(", ");
+            }
+            buf.append(_PARAM_TYPES_DEFAULT[params[i]]);
         }
         return buf.toString();
     }
@@ -350,6 +390,18 @@ public class GenTuple {
         }
         buf.append("            default: throw new IllegalArgumentException(String.valueOf(fieldNumber));\n");
         buf.append("        }\n");
+        return buf.toString();
+    }
+
+    /** Generated the apply() method for the class definition. */
+    private static String genApply(final int... params) {
+        final StringBuilder buf = new StringBuilder(params.length * 5);
+        for (int i = 0; i < params.length; i++) {
+            if (i > 0) {
+                buf.append(", ");
+            }
+            buf.append('p').append(i);
+        }
         return buf.toString();
     }
 

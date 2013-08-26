@@ -16,13 +16,13 @@
 package com.blockwithme.tuples.gen;
 
 /**
- * Either less than 5 parameters, or starts with Object.
+ * Either less than 4 parameters, or starts with Object.
  *
  * @author monster
  */
-public class OPlus5 extends OPlusN {
+public class OPlus4 extends OPlusN {
     /** Constructor */
-    public OPlus5() {
-        super(5);
+    public OPlus4() {
+        super(4);
     }
 }

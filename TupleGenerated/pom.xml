@@ -12,7 +12,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.blockwithme</groupId>
 	<artifactId>TupleGenerated</artifactId>
-	<version>1.0.0</version>
+	<version>1.1.0</version>
 
 	<name>TupleGenerated</name>
 	<description>Sub project of PrimitiveFunc - actually generates 'Tuples' classes based on user inputs.</description>
@@ -50,7 +50,7 @@
 		<licenseFile>${project.basedir}/../APACHE_LICENSE_HEADER.txt</licenseFile>
 		<minParam>1</minParam>
 		<maxParam>4</maxParam>
-		<filter>com.blockwithme.tuples.gen.OPlus5</filter>
+		<filter>com.blockwithme.tuples.gen.OPlus4</filter>
 	</properties>
 
 	<build>
@@ -216,12 +216,12 @@
 		<dependency>
 			<groupId>com.blockwithme</groupId>
 			<artifactId>TupleGenerator</artifactId>
-			<version>1.0.0</version>
+			<version>[1.0.0,2.0.0)</version>
 		</dependency>
 		<dependency>
 			<groupId>com.blockwithme</groupId>
 			<artifactId>PrimitiveFuncUtil</artifactId>
-			<version>1.0.0</version>
+			<version>[1.0.0,2.0.0)</version>
 		</dependency>
 	</dependencies>
 </project>

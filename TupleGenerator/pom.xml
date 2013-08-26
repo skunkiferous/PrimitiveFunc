@@ -12,7 +12,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.blockwithme</groupId>
 	<artifactId>TupleGenerator</artifactId>
-	<version>1.0.0</version>
+	<version>1.1.0</version>
 
 	<name>TupleGenerator</name>
 	<description>Finally fills the gap of using generic "Tuples" in Java,
@@ -106,7 +106,12 @@
 		<dependency>
 			<groupId>com.blockwithme</groupId>
 			<artifactId>PrimitiveFuncUtil</artifactId>
-			<version>1.0.0</version>
+			<version>[1.0.0,2.0.0)</version>
+		</dependency>
+		<dependency>
+			<groupId>com.blockwithme</groupId>
+			<artifactId>FuncGenerated</artifactId>
+			<version>[1.0.0,1.1.0)</version>
 		</dependency>
 	</dependencies>
 </project>
