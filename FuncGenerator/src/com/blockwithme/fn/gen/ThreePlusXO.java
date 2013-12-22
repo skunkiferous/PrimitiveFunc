@@ -13,25 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.blockwithme.fn.util;
+package com.blockwithme.fn.gen;
 
 /**
- * The Tuple interface is implemented by all the Tuple instances
- * that are generated GenTuple Generator
+ * Either less than 4 parameters, or ends with Objects.
  *
- * @author sdiot
+ * @author monster
  */
-public interface Tuple {
-
-    /** Returns the number of fields */
-    public int size();
-
-    /** Returns the type of the fields */
-    public Class<?>[] getSignature();
-
-    /** Returns the field with the given number */
-    public Object get(final int fieldNumber);
-
-    /** Converts the Tuple to an Object array. */
-    public Object[] toArray();
+public class ThreePlusXO extends NPlusXO {
+    /** Constructor */
+    public ThreePlusXO() {
+        super(3);
+    }
 }

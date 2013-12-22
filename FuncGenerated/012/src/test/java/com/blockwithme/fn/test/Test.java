@@ -1,7 +1,7 @@
 package com.blockwithme.fn.test;
 
-import com.blockwithme.fn.F1BB;
-import com.blockwithme.fn.F2BBF;
+import com.blockwithme.fn1.ByteFuncByte;
+import com.blockwithme.fn2.ByteFuncByteFloat;
 import com.blockwithme.fn.util.Functor;
 import com.blockwithme.fn.util.Util;
 
@@ -15,7 +15,7 @@ public class Test {
 
     public static void main(final String[] args) {
 
-        final Functor f = new F1BB() {
+        final Functor f = new ByteFuncByte() {
             @Override
             public byte apply(final byte p0) {
                 return 0;
@@ -26,14 +26,14 @@ public class Test {
         System.out.println("-------------------");
         print(signature);
         System.out.println("-------------------");
-        print(Util.getSignature(F1BB.class));
+        print(Util.getSignature(ByteFuncByte.class));
         final Util ut = new Util();
         System.out.println("-------------------");
         System.out.println(ut.getFunctor(signature).getName());
         System.out.println("-------------------");
-        print(Util.getSignature(F2BBF.class));
+        print(Util.getSignature(ByteFuncByteFloat.class));
         System.out.println("-------------------");
-        System.out.println(ut.getFunctor(Util.getSignature(F2BBF.class))
+        System.out.println(ut.getFunctor(Util.getSignature(ByteFuncByteFloat.class))
                 .getName());
         System.out.println("-------------------");
 

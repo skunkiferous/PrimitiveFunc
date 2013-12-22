@@ -12,7 +12,8 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.blockwithme</groupId>
 	<artifactId>FuncGenerated</artifactId>
-	<version>1.0.0</version>
+	<version>1.2.0</version>
+	<packaging>pom</packaging>
 
 	<name>FuncGenerated</name>
 	<description>Sub project of PrimitiveFunc - actually generates 'Function' interface based on user inputs.</description>
@@ -41,23 +42,24 @@
 		<maven-clean-plugin-version>2.5</maven-clean-plugin-version>
 		<exec-maven-plugin-version>1.2.1</exec-maven-plugin-version>
 		<maven-bundle-plugin-version>2.4.0</maven-bundle-plugin-version>
-		<maven-jar-plugin-version>2.4</maven-jar-plugin-version>
+		<maven-jar-plugin-version>2.3.2</maven-jar-plugin-version>
 		<maven-source-plugin-version>2.2.1</maven-source-plugin-version>
 		<java-source-version>1.7</java-source-version>
 		<java-target-version>1.7</java-target-version>
 
 		<packageName>com.blockwithme.fn</packageName>
-		<licenseFile>${project.basedir}/../APACHE_LICENSE_HEADER.txt</licenseFile>
-		<interfaceName>F</interfaceName>
+		<licenseFile>${project.basedir}/../../APACHE_LICENSE_HEADER.txt</licenseFile>
+		<procNamePrefix>Proc</procNamePrefix>
+		<funcNameInfix>Func</funcNameInfix>
 		<function>apply</function>
 		<minParam>0</minParam>
-		<maxParam>4</maxParam>
-		<filter>com.blockwithme.fn.gen.OPlus4</filter>
+		<maxParam>2</maxParam>
+		<shortName>false</shortName>
+		<filter>com.blockwithme.fn.gen.ThreePlusXO</filter>
 		<exceptions></exceptions>
     </properties>
 
 	<build>
-		<sourceDirectory>src</sourceDirectory>
 		<plugins>
 			<plugin>
 				<artifactId>maven-compiler-plugin</artifactId>
@@ -75,7 +77,7 @@
 				<configuration>
 					<filesets>
 						<fileset>
-							<directory>${project.basedir}/src</directory>
+							<directory>${project.basedir}/src/main/java</directory>
 						</fileset>
 						<fileset>
 							<directory>${project.basedir}/target</directory>
@@ -97,17 +99,19 @@
 						<configuration>
 							<properties>
 								<packageName>com.blockwithme.fn</packageName>
-								<licenseFile>${project.basedir}/../APACHE_LICENSE_HEADER.txt</licenseFile>
+								<licenseFile>${project.basedir}/../../APACHE_LICENSE_HEADER.txt</licenseFile>
 							</properties>
 							<mainClass>com.blockwithme.fn.gen.GenFunc</mainClass>
 							<arguments>
-								<argument>${project.basedir}/src</argument>
+								<argument>${project.basedir}/src/main/java</argument>
 								<argument>${licenseFile}</argument>
 								<argument>${packageName}</argument>
-								<argument>${interfaceName}</argument>
+								<argument>${procNamePrefix}</argument>
+								<argument>${funcNameInfix}</argument>
 								<argument>${function}</argument>
 								<argument>${minParam}</argument>
 								<argument>${maxParam}</argument>
+								<argument>${shortName}</argument>
 								<argument>${filter}</argument>
 								<argument>${exceptions}</argument>
 							</arguments>
@@ -118,12 +122,12 @@
 					<dependency>
 						<groupId>com.blockwithme</groupId>
 						<artifactId>FuncGenerator</artifactId>
-						<version>1.0.0</version>
+						<version>1.2.0</version>
 					</dependency>
 					<dependency>
 						<groupId>com.blockwithme</groupId>
 						<artifactId>PrimitiveFuncUtil</artifactId>
-						<version>1.0.0</version>
+						<version>1.2.0</version>
 					</dependency>
 				</dependencies>
 			</plugin>
@@ -145,7 +149,7 @@
 					<manifestLocation>${project.basedir}/META-INF</manifestLocation>
 					<instructions>
 						<Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
-						<Export-Package>com.blockwithme.fn</Export-Package>
+						<Export-Package>{local-packages}</Export-Package>
 					</instructions>
 				</configuration>
 			</plugin>
@@ -175,7 +179,7 @@
 		</plugins>
 		<resources>
 			<resource>
-				<directory>${basedir}/..</directory>
+				<directory>${basedir}/../..</directory>
 				<filtering>false</filtering>
 				<includes>
 					<include>LICENSE</include>
