@@ -35,6 +35,7 @@ Usage :
   Hint: It supports up to 5 as the maximum number of parameters, but that would be near 1 million interfaces; not recommended.
   (Note: this step generates FuncGenerated-x.y.z.jar, modify the 'FuncGenerated/pom.xml' appropriately if the artifact-ids need any modifications.)
 
+Note: To stop the "exponential explosion" of the number of functor interfaces, the "4-paramters" functor only takes an object as last parameter, and the "5-parameters" functor only take objects as the last two parameters. In other words, only the first 3 parameters are "totally free". This can be worked around in many cases by moving the "object parameters" to the end. (Perhaps, having the Objects as first parameters would be better?)
 
 Primitive Tuple Implementations
 ===============================

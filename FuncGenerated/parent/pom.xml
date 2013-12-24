@@ -57,125 +57,17 @@
 		<shortName>false</shortName>
 		<filter>com.blockwithme.fn.gen.ThreePlusXO</filter>
 		<exceptions></exceptions>
-    </properties>
+	</properties>
+
+	<modules>
+		<module>../012</module>
+		<module>../3</module>
+		<module>../4</module>
+		<module>../5</module>
+	</modules>
 
 	<build>
 		<plugins>
-			<plugin>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<version>${maven-compiler-plugin-version}</version>
-				<configuration>
-					<source>${java-source-version}</source>
-					<target>${java-target-version}</target>
-					<compilerArgument>-g:none</compilerArgument>
-				</configuration>
-			</plugin>
-			<!-- To clean the generated sources. -->
-			<plugin>
-				<artifactId>maven-clean-plugin</artifactId>
-				<version>${maven-clean-plugin-version}</version>
-				<configuration>
-					<filesets>
-						<fileset>
-							<directory>${project.basedir}/src/main/java</directory>
-						</fileset>
-						<fileset>
-							<directory>${project.basedir}/target</directory>
-						</fileset>
-					</filesets>
-				</configuration>
-			</plugin>
-			<!-- To generate sources -->
-			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>exec-maven-plugin</artifactId>
-				<version>${exec-maven-plugin-version}</version>
-				<executions>
-					<execution>
-						<phase>generate-sources</phase>
-						<goals>
-							<goal>java</goal>
-						</goals>
-						<configuration>
-							<properties>
-								<packageName>com.blockwithme.fn</packageName>
-								<licenseFile>${project.basedir}/../../APACHE_LICENSE_HEADER.txt</licenseFile>
-							</properties>
-							<mainClass>com.blockwithme.fn.gen.GenFunc</mainClass>
-							<arguments>
-								<argument>${project.basedir}/src/main/java</argument>
-								<argument>${licenseFile}</argument>
-								<argument>${packageName}</argument>
-								<argument>${procNamePrefix}</argument>
-								<argument>${funcNameInfix}</argument>
-								<argument>${function}</argument>
-								<argument>${minParam}</argument>
-								<argument>${maxParam}</argument>
-								<argument>${shortName}</argument>
-								<argument>${filter}</argument>
-								<argument>${exceptions}</argument>
-							</arguments>
-						</configuration>
-					</execution>
-				</executions>
-				<dependencies>
-					<dependency>
-						<groupId>com.blockwithme</groupId>
-						<artifactId>FuncGenerator</artifactId>
-						<version>1.2.0</version>
-					</dependency>
-					<dependency>
-						<groupId>com.blockwithme</groupId>
-						<artifactId>PrimitiveFuncUtil</artifactId>
-						<version>1.2.0</version>
-					</dependency>
-				</dependencies>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.felix</groupId>
-				<artifactId>maven-bundle-plugin</artifactId>
-				<executions>
-					<execution>
-						<id>bundle-manifest</id>
-						<phase>process-classes</phase>
-						<goals>
-							<goal>manifest</goal>
-						</goals>
-					</execution>
-				</executions>
-				<version>${maven-bundle-plugin-version}</version>
-				<extensions>true</extensions>
-				<configuration>
-					<manifestLocation>${project.basedir}/META-INF</manifestLocation>
-					<instructions>
-						<Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
-						<Export-Package>{local-packages}</Export-Package>
-					</instructions>
-				</configuration>
-			</plugin>
-			<plugin>
-				<artifactId>maven-jar-plugin</artifactId>
-				<version>${maven-jar-plugin-version}</version>
-				<configuration>
-					<archive>
-						<manifestFile>${project.basedir}/META-INF/MANIFEST.MF</manifestFile>
-					</archive>
-				</configuration>
-			</plugin>
-			<!-- To generate source jar -->
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-source-plugin</artifactId>
-				<version>${maven-source-plugin-version}</version>
-				<executions>
-					<execution>
-						<id>attach-sources</id>
-						<goals>
-							<goal>jar</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
 		</plugins>
 		<resources>
 			<resource>
@@ -189,6 +81,122 @@
 		</resources>
 		<pluginManagement>
 			<plugins>
+
+				<plugin>
+					<artifactId>maven-compiler-plugin</artifactId>
+					<version>${maven-compiler-plugin-version}</version>
+					<configuration>
+						<source>${java-source-version}</source>
+						<target>${java-target-version}</target>
+						<compilerArgument>-g:none</compilerArgument>
+					</configuration>
+				</plugin>
+				<!-- To clean the generated sources. -->
+				<plugin>
+					<artifactId>maven-clean-plugin</artifactId>
+					<version>${maven-clean-plugin-version}</version>
+					<configuration>
+						<filesets>
+							<fileset>
+								<directory>${project.basedir}/src/main/java</directory>
+							</fileset>
+							<fileset>
+								<directory>${project.basedir}/target</directory>
+							</fileset>
+						</filesets>
+					</configuration>
+				</plugin>
+				<!-- To generate sources -->
+				<plugin>
+					<groupId>org.codehaus.mojo</groupId>
+					<artifactId>exec-maven-plugin</artifactId>
+					<version>${exec-maven-plugin-version}</version>
+					<executions>
+						<execution>
+							<phase>generate-sources</phase>
+							<goals>
+								<goal>java</goal>
+							</goals>
+							<configuration>
+								<properties>
+									<packageName>com.blockwithme.fn</packageName>
+									<licenseFile>${project.basedir}/../../APACHE_LICENSE_HEADER.txt</licenseFile>
+								</properties>
+								<mainClass>com.blockwithme.fn.gen.GenFunc</mainClass>
+								<arguments>
+									<argument>${project.basedir}/src/main/java</argument>
+									<argument>${licenseFile}</argument>
+									<argument>${packageName}</argument>
+									<argument>${procNamePrefix}</argument>
+									<argument>${funcNameInfix}</argument>
+									<argument>${function}</argument>
+									<argument>${minParam}</argument>
+									<argument>${maxParam}</argument>
+									<argument>${shortName}</argument>
+									<argument>${filter}</argument>
+									<argument>${exceptions}</argument>
+								</arguments>
+							</configuration>
+						</execution>
+					</executions>
+					<dependencies>
+						<dependency>
+							<groupId>com.blockwithme</groupId>
+							<artifactId>FuncGenerator</artifactId>
+							<version>1.2.0</version>
+						</dependency>
+						<dependency>
+							<groupId>com.blockwithme</groupId>
+							<artifactId>PrimitiveFuncUtil</artifactId>
+							<version>1.2.0</version>
+						</dependency>
+					</dependencies>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.felix</groupId>
+					<artifactId>maven-bundle-plugin</artifactId>
+					<executions>
+						<execution>
+							<id>bundle-manifest</id>
+							<phase>process-classes</phase>
+							<goals>
+								<goal>manifest</goal>
+							</goals>
+						</execution>
+					</executions>
+					<version>${maven-bundle-plugin-version}</version>
+					<extensions>true</extensions>
+					<configuration>
+						<manifestLocation>${project.basedir}/META-INF</manifestLocation>
+						<instructions>
+							<Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
+							<Export-Package>{local-packages}</Export-Package>
+						</instructions>
+					</configuration>
+				</plugin>
+				<plugin>
+					<artifactId>maven-jar-plugin</artifactId>
+					<version>${maven-jar-plugin-version}</version>
+					<configuration>
+						<archive>
+							<manifestFile>${project.basedir}/META-INF/MANIFEST.MF</manifestFile>
+						</archive>
+					</configuration>
+				</plugin>
+				<!-- To generate source jar -->
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-source-plugin</artifactId>
+					<version>${maven-source-plugin-version}</version>
+					<executions>
+						<execution>
+							<id>attach-sources</id>
+							<goals>
+								<goal>jar</goal>
+							</goals>
+						</execution>
+					</executions>
+				</plugin>
 				<!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build itself.-->
 				<plugin>
 					<groupId>org.eclipse.m2e</groupId>
